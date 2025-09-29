@@ -1,11 +1,29 @@
+using Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
+using SharedConfig;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddOptions<AppSettings>()
+    .Bind(builder.Configuration.GetSection("AppSettings"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+var config = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<ContextSlobPlot>((options) =>
+{
+    var dbSettings = config.Database;
+    if (string .IsNullOrEmpty(dbSettings.ConnectionString))
+        throw new InvalidOperationException("Database configuration is missing or invalid");
+
+    options.UseNpgsql(dbSettings.ConnectionString);
+});
 
 var app = builder.Build();
 
