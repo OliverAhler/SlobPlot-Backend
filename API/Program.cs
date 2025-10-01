@@ -1,3 +1,6 @@
+using Application.Common;
+using Application.Common.Interfaces;
+using Infrastructure;
 using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using SharedConfig;
@@ -24,6 +27,22 @@ builder.Services.AddDbContext<ContextSlobPlot>((options) =>
 
     options.UseNpgsql(dbSettings.ConnectionString);
 });
+
+builder.Services.AddConfigureInfrastructure();
+
+builder.Services.Scan(scan => scan
+    .FromAssemblyOf<IHandler>()
+    .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)))
+    .AsImplementedInterfaces()
+    .WithScopedLifetime());
+
+builder.Services.Scan(scan => scan
+    .FromAssemblyOf<IHandler>()
+    .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<,>)))
+    .AsImplementedInterfaces()
+    .WithScopedLifetime());
+
+builder.Services.AddScoped<IDispatcher, Dispatcher>();
 
 var app = builder.Build();
 
