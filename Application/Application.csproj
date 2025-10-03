@@ -7,7 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Interfaces\" />
+      <Folder Include="DTOs\" />
+      <Folder Include="Features\Auth\Commands\" />
+      <Folder Include="Features\Stories\Commands\" />
+      <Folder Include="Features\Stories\Queries\" />
     </ItemGroup>
 
     <ItemGroup>
