@@ -1,17 +1,20 @@
+using System.Security.Claims;
 using Application.Common.Interfaces;
 using Application.Features.Auth.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UserProfileController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        var subClaim = User.FindFirst("sub")?.Value;
+        var subClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
         if (string.IsNullOrEmpty(subClaim) || !Guid.TryParse(subClaim, out var userId))
             return Unauthorized("Invalid or missing user ID in token");
