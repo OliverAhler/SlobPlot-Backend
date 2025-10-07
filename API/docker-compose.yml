@@ -1,0 +1,21 @@
+#docker-compose up --build -d
+#docker-compose down
+#docker logs slobplot-redis
+
+services:
+  backend-api:
+    build:
+      context: ..
+      dockerfile: API/Dockerfile
+    container_name: slobplot-backend
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "8080:8080"
+    networks:
+      - slobplot-network
+    restart: unless-stopped
+
+networks:
+  slobplot-network:
+    external: true

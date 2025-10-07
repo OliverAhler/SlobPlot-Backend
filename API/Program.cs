@@ -58,7 +58,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.Authority = config.Authentik.Authority;
-        options.RequireHttpsMetadata = true;
+        options.RequireHttpsMetadata = config.Authentik.RequireHttpsMetadata;
         options.MetadataAddress = config.Authentik.MetadataAddress;
         options.TokenValidationParameters = new TokenValidationParameters
         {
