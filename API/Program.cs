@@ -1,9 +1,6 @@
-using Application.Common;
-using Application.Common.Interfaces;
+using Application;
 using Infrastructure;
-using Infrastructure.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SharedConfig;
 
@@ -26,30 +23,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ContextSlobPlot>((options) =>
-{
-    var dbSettings = config?.Database;
-    if (string .IsNullOrEmpty(dbSettings?.ConnectionString))
-        throw new InvalidOperationException("Database configuration is missing or invalid");
-
-    options.UseNpgsql(dbSettings.ConnectionString);
-});
-
-builder.Services.AddConfigureInfrastructure();
-
-builder.Services.Scan(scan => scan
-    .FromAssemblyOf<IHandler>()
-    .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)))
-    .AsImplementedInterfaces()
-    .WithScopedLifetime());
-
-builder.Services.Scan(scan => scan
-    .FromAssemblyOf<IHandler>()
-    .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<,>)))
-    .AsImplementedInterfaces()
-    .WithScopedLifetime());
-
-builder.Services.AddScoped<IDispatcher, Dispatcher>();
+builder.Services.AddConfigureInfrastructure(config);
+builder.Services.AddConfigureApplication();
 
 // =====================================================
 // ===================== Authentication ================
