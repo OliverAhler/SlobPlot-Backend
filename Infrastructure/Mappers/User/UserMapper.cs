@@ -9,6 +9,7 @@ public static class UserMapper
     // Expression that EF Core CAN translate to SQL
     public static Expression<Func<DbUser, UserDto>> ToDto => user => new UserDto(
         user.Id,
+        user.SubUid,
         user.UserName,
         user.CreatedAt
     );
@@ -18,6 +19,7 @@ public static class UserMapper
     {
         return new UserDto(
             user.Id,
+            user.SubUid,
             user.UserName,
             user.CreatedAt
         );

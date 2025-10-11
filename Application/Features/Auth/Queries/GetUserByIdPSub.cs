@@ -5,20 +5,20 @@ using Application.Interfaces;
 
 namespace Application.Features.Auth.Queries;
 
-public record GetUserByUidQuery(Guid Uid) : IQuery<Result<UserDto>>;
+public record GetUserByIdPSubQuery(Guid Sub) : IQuery<Result<UserDto>>;
 
-public class GetUserByUid(IUserRepository userRepository) : IQueryHandler<GetUserByUidQuery, Result<UserDto>>
+public class GetUserByIdPSub(IUserRepository userRepository) : IQueryHandler<GetUserByIdPSubQuery, Result<UserDto>>
 {
-    public async Task<Result<UserDto>> Handle(GetUserByUidQuery query, CancellationToken cancellationToken)
+    public async Task<Result<UserDto>> Handle(GetUserByIdPSubQuery query, CancellationToken cancellationToken)
     {
-        var uid = query.Uid;
+        var sub = query.Sub;
 
-        if (uid == Guid.Empty)
+        if (sub == Guid.Empty)
             return Result<UserDto>.Failure("Can't search for user without a valid uid");
 
         try
         {
-            var user = await userRepository.GetUserByUidAsync(uid, cancellationToken);
+            var user = await userRepository.GetUserByIdPUidAsync(sub, cancellationToken);
             
             if(user == null)
                 return Result<UserDto>.Failure("User not found");

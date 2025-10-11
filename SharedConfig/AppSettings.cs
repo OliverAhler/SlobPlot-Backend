@@ -5,6 +5,7 @@ public class AppSettings
     
     public DatabaseSettings Database { get; init; } = new();
     public AuthentikSettings Authentik { get; init; } = new();
+    public GatewaySettings Gateway { get; init; } = new();
 }
 
 public class AuthentikSettings
@@ -20,4 +21,9 @@ public class AuthentikSettings
 public class DatabaseSettings
 {
     public string ConnectionString { get; set; } = string.Empty;
+}
+
+public class GatewaySettings
+{
+    public string SecretKey { get; set; } = string.Empty;
 }
