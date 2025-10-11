@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.Models;
+namespace Infrastructure.Models.IDM;
 
 [Table("users", Schema = "idm")]
 public class DbUser
@@ -10,14 +10,19 @@ public class DbUser
     [Column("id")]
     public Guid Id { get; set; }
     
-    [Column("display_name")]
-    public string DisplayName { get; set; }
+    [Column("sub_uid")]
+    public Guid SubUid { get; set; }
     
-    [Column("bio")]
-    public string? Bio { get; set; }
+    [Column("user_name")]
+    [MaxLength(30)]
+    [MinLength(3)]
+    public string UserName { get; set; } = string.Empty;
     
     [Column("created_at")]
     public DateTime CreatedAt { get; set; }
+    
+    [Column("updated_at")]
+    public DateTime UpdatedAt { get; set; }
     
     [Column("is_deleted")]
     public bool IsDeleted { get; set; }
@@ -25,12 +30,7 @@ public class DbUser
     [Column("deleted_at")]
     public DateTime? DeletedAt { get; set; }
     
-    [Column("icon_id")]
-    public int? IconId { get; set; }
     
-    [Column("icon_color")]
-    public string? IconColor { get; set; }
-    
-    // Navigation property
-    public DbIcon? Icon { get; set; }
+    // Navigation
+    public DbUserProfile? Profile { get; set; }
 }

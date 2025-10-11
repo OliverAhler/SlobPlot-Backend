@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using API.Extensions;
 using Application.Common.Interfaces;
 using Application.Features.Auth.Queries;
 using Microsoft.AspNetCore.Authorization;
@@ -14,12 +15,13 @@ public class UserProfileController(IDispatcher dispatcher) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        var subClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = User.GetUserId();
         
-        if (string.IsNullOrEmpty(subClaim) || !Guid.TryParse(subClaim, out var userId))
+        if (!userId.HasValue)
             return Unauthorized("Invalid or missing user ID in token");
         
-        var query = new GetUserByUidQuery(userId);
+        var username = User.GetNickname();
+        var query = new GetUserByUidQuery(userId.Value);
         
         var result = await dispatcher.Dispatch(query, cancellationToken);
         

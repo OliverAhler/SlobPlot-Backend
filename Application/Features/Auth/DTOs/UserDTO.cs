@@ -1,10 +1,7 @@
 namespace Application.Features.Auth.DTOs;
 
-public record UserProfileDto(
+public record UserDto(
     Guid Id,
-    string DisplayName,
-    string? Bio,
-    string? IconColor,
-    string? IconCode,
+    string UserName,
     DateTime CreatedAt
 );

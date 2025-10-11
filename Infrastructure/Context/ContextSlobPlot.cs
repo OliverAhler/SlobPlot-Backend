@@ -1,4 +1,4 @@
-using Domain.Models;
+using Infrastructure.Models.IDM;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Context;
@@ -6,7 +6,7 @@ namespace Infrastructure.Context;
 public class ContextSlobPlot(DbContextOptions<ContextSlobPlot> options) : DbContext(options)
 {
     public DbSet<DbUser> Users { get; set; } = null!;
-    public DbSet<DbIcon> Icons { get; set; } = null!;
+    public DbSet<DbUserProfile> UserProfiles { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -14,10 +14,10 @@ public class ContextSlobPlot(DbContextOptions<ContextSlobPlot> options) : DbCont
         
         modelBuilder.Entity<DbUser>(entity =>
         {
-            entity.HasOne(user => user.Icon)
-                .WithMany()
-                .HasForeignKey(profile => profile.IconId)
-                .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(u => u.Profile)
+                .WithOne(p => p.User)
+                .HasForeignKey<DbUserProfile>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

@@ -4,6 +4,6 @@ namespace Application.Interfaces;
 
 public interface IUserRepository
 {
-    Task<IReadOnlyCollection<UserProfileDto>> GetAllUsersAsync(CancellationToken cancellationToken);
-    Task<UserProfileDto?> GetUserByUidAsync(Guid uid, CancellationToken cancellationToken);
+    Task<IReadOnlyCollection<UserDto>> GetAllUsersAsync(CancellationToken cancellationToken);
+    Task<UserDto?> GetUserByUidAsync(Guid uid, CancellationToken cancellationToken);
 }

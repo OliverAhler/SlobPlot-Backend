@@ -1,39 +1,26 @@
 using Application.Features.Auth.DTOs;
 using Application.Interfaces;
 using Infrastructure.Context;
+using Infrastructure.Mappers.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services;
 
 public class UserRepository(ContextSlobPlot context) : IUserRepository
 {
-    private readonly ContextSlobPlot _context = context;
-
-    public async Task<IReadOnlyCollection<UserProfileDto>> GetAllUsersAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<UserDto>> GetAllUsersAsync(CancellationToken cancellationToken)
     {
-        return await _context.Users
+        return await context.Users
             .Where(user => !user.IsDeleted)
-            .Select(user => new UserProfileDto(
-                user.Id,
-                user.DisplayName,
-                user.Bio,
-                user.IconColor,
-                user.Icon.Code,
-                user.CreatedAt
-            )).ToListAsync(cancellationToken);
+            .Select(UserMapper.ToDto)
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<UserProfileDto?> GetUserByUidAsync(Guid uid, CancellationToken cancellationToken )
+    public async Task<UserDto?> GetUserByUidAsync(Guid uid, CancellationToken cancellationToken )
     {
-        return await _context.Users
+        return await context.Users
             .Where(user => user.Id == uid)
-            .Select(user => new UserProfileDto(
-                user.Id,
-                user.DisplayName,
-                user.Bio,
-                user.IconColor,
-                user.Icon.Code,
-                user.CreatedAt
-            )).FirstOrDefaultAsync(cancellationToken);
+            .Select(UserMapper.ToDto)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

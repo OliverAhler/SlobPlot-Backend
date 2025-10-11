@@ -5,29 +5,29 @@ using Application.Interfaces;
 
 namespace Application.Features.Auth.Queries;
 
-public record GetUserByUidQuery(Guid Uid) : IQuery<Result<UserProfileDto>>;
+public record GetUserByUidQuery(Guid Uid) : IQuery<Result<UserDto>>;
 
-public class GetUserByUid(IUserRepository userRepository) : IQueryHandler<GetUserByUidQuery, Result<UserProfileDto>>
+public class GetUserByUid(IUserRepository userRepository) : IQueryHandler<GetUserByUidQuery, Result<UserDto>>
 {
-    public async Task<Result<UserProfileDto>> Handle(GetUserByUidQuery query, CancellationToken cancellationToken)
+    public async Task<Result<UserDto>> Handle(GetUserByUidQuery query, CancellationToken cancellationToken)
     {
         var uid = query.Uid;
 
         if (uid == Guid.Empty)
-            return Result<UserProfileDto>.Failure("Can't search for user without a valid uid");
+            return Result<UserDto>.Failure("Can't search for user without a valid uid");
 
         try
         {
             var user = await userRepository.GetUserByUidAsync(uid, cancellationToken);
             
             if(user == null)
-                return Result<UserProfileDto>.Failure("User not found");
+                return Result<UserDto>.Failure("User not found");
             
-            return Result<UserProfileDto>.Success(user);
+            return Result<UserDto>.Success(user);
         }
         catch
         {
-            return Result<UserProfileDto>.Failure("An error occurred while retrieving user");
+            return Result<UserDto>.Failure("An error occurred while retrieving user");
         }
     }
 }

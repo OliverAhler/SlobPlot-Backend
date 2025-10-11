@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="DTOs\" />
       <Folder Include="Features\Auth\Commands\" />
       <Folder Include="Features\Stories\Commands\" />
       <Folder Include="Features\Stories\Queries\" />
@@ -15,6 +14,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
+      <PackageReference Include="Scrutor" Version="6.1.0" />
     </ItemGroup>
 
 </Project>
