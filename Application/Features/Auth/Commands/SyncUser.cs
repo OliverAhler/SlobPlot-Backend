@@ -5,11 +5,11 @@ using Application.Interfaces;
 
 namespace Application.Features.Auth.Commands;
 
-public record SyncUserCommand(Guid SubUid, string UserName) : ICommand<Result<SyncUserDto>>;
+public record SyncUserCommand(Guid SubUid, string UserName) : ICommand<Result<bool>>;
 
-public class SyncUser(IUserRepository userRepository) : ICommandHandler<SyncUserCommand, Result<SyncUserDto>>
+public class SyncUser(IUserRepository userRepository) : ICommandHandler<SyncUserCommand, Result<bool>>
 {
-    public async Task<Result<SyncUserDto>> Handle(SyncUserCommand command, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(SyncUserCommand command, CancellationToken cancellationToken)
     {
         try
         {
@@ -19,11 +19,11 @@ public class SyncUser(IUserRepository userRepository) : ICommandHandler<SyncUser
                 cancellationToken
             );
             
-            return Result<SyncUserDto>.Success(isNewUser);
+            return Result<bool>.Success(isNewUser);
         }
         catch
         {
-            return Result<SyncUserDto>.Failure("An error occurred while retrieving user");
+            return Result<bool>.Failure("An error occurred while retrieving user");
         }
     }
 }

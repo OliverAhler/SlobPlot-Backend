@@ -25,7 +25,7 @@ public class UserRepository(ContextSlobPlot context) : IUserRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<SyncUserDto> SyncUserFromIdPAsync(Guid subUid, string username, CancellationToken cancellationToken)
+    public async Task<bool> SyncUserFromIdPAsync(Guid subUid, string username, CancellationToken cancellationToken)
     {
         var existingUser = await context.Users
             .FirstOrDefaultAsync(u => u.SubUid == subUid && !u.IsDeleted, cancellationToken);
@@ -33,27 +33,37 @@ public class UserRepository(ContextSlobPlot context) : IUserRepository
         if (existingUser != null)
         {
             // Only update if username changed
-            if (existingUser.UserName == username) return new SyncUserDto(IsNewUser: false);
+            if (existingUser.UserName == username) return false;
             
             existingUser.UserName = username;
             existingUser.UpdatedAt = DateTime.UtcNow;
             await context.SaveChangesAsync(cancellationToken);
-        
-            return new SyncUserDto(IsNewUser: false);
+
+            return false;
         }
 
         // User doesn't exist - create new
         var newUser = new DbUser
         {
+            Id = Guid.NewGuid(),
             SubUid = subUid,
             UserName = username,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
+
+        var newProfile = new DbUserProfile()
+        {
+            UserId = newUser.Id,
+            Bio = null,
+            DisplayName = username,
+            UpdatedAt = DateTime.UtcNow
+        };
     
         context.Users.Add(newUser);
+        context.UserProfiles.Add(newProfile);
         await context.SaveChangesAsync(cancellationToken);
-    
-        return new SyncUserDto(IsNewUser: true);
+
+        return true;
     }
 }

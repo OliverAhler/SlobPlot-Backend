@@ -1,3 +1,4 @@
+using API.Contracts.Users;
 using API.Extensions;
 using Application.Common.Interfaces;
 using Application.Features.Auth.Commands;
@@ -32,16 +33,12 @@ public class UserController(IDispatcher dispatcher, IOptions<AppSettings> config
             : NotFound(result.Error);
     }
     
-    public record SyncUserRequest(string SubUid, string UserName);
-    
     [HttpPost]
     [Route("sync")]
     public async Task<IActionResult> SyncUser([FromBody] SyncUserRequest? request, CancellationToken cancellationToken)
     {
         if (!Request.Headers.TryGetValue("X-Internal-Gateway", out var headerValue) || headerValue != config.Value.Gateway.SecretKey)
-        {
             return Unauthorized("This endpoint is only accessible from the gateway");
-        }
         
         if (request is null)
             return BadRequest("Request body is required");
@@ -54,9 +51,11 @@ public class UserController(IDispatcher dispatcher, IOptions<AppSettings> config
     
         var command = new SyncUserCommand(subUid, request.UserName);
         var result = await dispatcher.Dispatch(command, cancellationToken);
-    
-        return result.IsSuccess 
-            ? Ok(result.Value) 
-            : BadRequest(result.Error);  // BadRequest, not NotFound
+        
+        if(!result.IsSuccess)
+            return BadRequest(result.Error);
+
+        var response = new SyncUserResponse(isNewUser: result.Value);
+        return Ok(response);
     }
 }
