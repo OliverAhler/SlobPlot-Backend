@@ -23,7 +23,6 @@ public class UserController(IDispatcher dispatcher, IOptions<AppSettings> config
         if (!userId.HasValue)
             return Unauthorized("Invalid or missing user ID in token");
         
-        var username = User.GetNickname();
         var query = new GetUserByIdPSubQuery(userId.Value);
         
         var result = await dispatcher.Dispatch(query, cancellationToken);
@@ -35,27 +34,23 @@ public class UserController(IDispatcher dispatcher, IOptions<AppSettings> config
     
     [HttpPost]
     [Route("sync")]
-    public async Task<IActionResult> SyncUser([FromBody] SyncUserRequest? request, CancellationToken cancellationToken)
+    public async Task<IActionResult> SyncUser([FromBody] SyncUserRequest request, CancellationToken cancellationToken)
     {
         if (!Request.Headers.TryGetValue("X-Internal-Gateway", out var headerValue) || headerValue != config.Value.Gateway.SecretKey)
             return Unauthorized("This endpoint is only accessible from the gateway");
         
-        if (request is null)
-            return BadRequest("Request body is required");
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
         if (!Guid.TryParse(request.SubUid, out var subUid))
             return BadRequest("Invalid SubUid format");
     
-        if (string.IsNullOrWhiteSpace(request.UserName))
-            return BadRequest("UserName is required");
-    
         var command = new SyncUserCommand(subUid, request.UserName);
         var result = await dispatcher.Dispatch(command, cancellationToken);
         
-        if(!result.IsSuccess)
-            return BadRequest(result.Error);
+        return result.IsSuccess 
+            ? Ok(new SyncUserResponse(result.Value))
+            : BadRequest(result.Error);
 
-        var response = new SyncUserResponse(isNewUser: result.Value);
-        return Ok(response);
     }
 }

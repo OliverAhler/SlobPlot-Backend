@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services;
 
-public class UserProfileRepository(ContextSlobPlot context) : IUserProfileRepository
+public class UserProfileRepository(ContextUsers context) : IUserProfileRepository
 {
     public async Task<UserProfile?> GetByUserIdAsync(UserId userId, CancellationToken cancellationToken = default)
     {

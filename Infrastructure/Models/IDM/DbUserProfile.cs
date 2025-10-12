@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Infrastructure.Models.Story;
 
 namespace Infrastructure.Models.IDM;
 
@@ -24,4 +25,6 @@ public class DbUserProfile
     
     // Navigation
     public DbUser User { get; set; } = null!;
+    
+    public ICollection<DbStory> Stories { get; set; } = new List<DbStory>();
 }

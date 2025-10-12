@@ -14,7 +14,7 @@ public static class ConfigurationService
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         
-        services.AddDbContext<ContextSlobPlot>((options) =>
+        services.AddDbContext<ContextUsers>((options) =>
         {
             var dbSettings = config?.Database;
             if (string .IsNullOrEmpty(dbSettings?.ConnectionString))
