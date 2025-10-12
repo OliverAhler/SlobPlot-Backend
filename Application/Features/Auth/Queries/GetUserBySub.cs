@@ -1,13 +1,13 @@
-using Application.Common;
 using Application.Common.Interfaces;
 using Application.Features.Auth.DTOs;
-using Application.Interfaces;
+using Domain.Common;
+using Domain.IRepositories;
 
 namespace Application.Features.Auth.Queries;
 
 public record GetUserByIdPSubQuery(Guid Sub) : IQuery<Result<UserDto>>;
 
-public class GetUserByIdPSub(IUserRepository userRepository) : IQueryHandler<GetUserByIdPSubQuery, Result<UserDto>>
+public class GetUserBySubQueryHandler(IUserRepository userRepository) : IQueryHandler<GetUserByIdPSubQuery, Result<UserDto>>
 {
     public async Task<Result<UserDto>> Handle(GetUserByIdPSubQuery query, CancellationToken cancellationToken)
     {
@@ -18,12 +18,14 @@ public class GetUserByIdPSub(IUserRepository userRepository) : IQueryHandler<Get
 
         try
         {
-            var user = await userRepository.GetUserByIdPUidAsync(sub, cancellationToken);
+            var user = await userRepository.GetUserBySubAsync(sub, cancellationToken);
             
             if(user == null)
                 return Result<UserDto>.Failure("User not found");
+
+            var dto = new UserDto(user.Id.Value, user.SubUid, user.UserName, user.CreatedAt);
             
-            return Result<UserDto>.Success(user);
+            return Result<UserDto>.Success(dto);
         }
         catch
         {

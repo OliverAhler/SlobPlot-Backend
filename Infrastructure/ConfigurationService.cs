@@ -1,4 +1,4 @@
-using Application.Interfaces;
+using Domain.IRepositories;
 using Infrastructure.Context;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +12,7 @@ public static class ConfigurationService
     public static IServiceCollection AddConfigureInfrastructure(this IServiceCollection services, AppSettings config)
     {
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         
         services.AddDbContext<ContextSlobPlot>((options) =>
         {

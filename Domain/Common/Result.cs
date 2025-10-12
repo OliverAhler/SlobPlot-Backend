@@ -1,4 +1,4 @@
-namespace Application.Common;
+namespace Domain.Common;
 
 public class Result
 {
@@ -15,7 +15,6 @@ public class Result
     public static Result Failure(string error) => new(false, error);
 }
 
-// Application/Common/Result{T}.cs
 public class Result<T> : Result
 {
     public T Value { get; }
