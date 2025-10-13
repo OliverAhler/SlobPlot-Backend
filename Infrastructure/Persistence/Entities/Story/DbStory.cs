@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Infrastructure.Models.IDM;
-using Infrastructure.Models.Master;
+using Infrastructure.Persistence.Entities.Identity;
+using Infrastructure.Persistence.Entities.Master;
 
-namespace Infrastructure.Models.Story;
+namespace Infrastructure.Persistence.Entities.Story;
 
 [Table("stories", Schema = "story")]
 public class DbStory

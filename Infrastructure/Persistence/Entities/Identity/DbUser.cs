@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Infrastructure.Models.IDM;
+namespace Infrastructure.Persistence.Entities.Identity;
 
-[Table("users", Schema = "idm")]
+[Table("users", Schema = "auth")]
 public class DbUser
 {
     [Key]

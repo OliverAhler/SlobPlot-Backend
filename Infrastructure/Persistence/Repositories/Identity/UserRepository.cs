@@ -1,13 +1,11 @@
 using Domain.Aggregates.Users;
 using Domain.IRepositories;
-using Infrastructure.Context;
 using Infrastructure.Mappers.Users;
-using Infrastructure.Models.IDM;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Services;
+namespace Infrastructure.Persistence.Repositories.Identity;
 
-public class UserRepository(ContextUsers context) : IUserRepository
+public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
     public async Task<User?> GetUserByIdAsync(Guid id, CancellationToken cancellationToken)
     {

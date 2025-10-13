@@ -1,12 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Infrastructure.Models.Story;
+using Infrastructure.Persistence.Entities.Story;
 
-namespace Infrastructure.Models.Master;
+namespace Infrastructure.Persistence.Entities.Master;
 
-
-[Table("story_status", Schema = "master")]
-public class DbStoryStatus
+[Table("genres", Schema = "master")]
+public class DbGenre
 {
     [Key]
     [Column("id")]
@@ -17,5 +16,5 @@ public class DbStoryStatus
     public string DisplayName { get; set; } = string.Empty;
     
     // Navigation
-    public ICollection<DbStory> Stories { get; set; } = new List<DbStory>();
+    public ICollection<DbStoryGenre> StoryGenres { get; set; } = new List<DbStoryGenre>();
 }

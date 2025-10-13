@@ -3,7 +3,7 @@ using Domain.Aggregates.Users;
 using Domain.Common;
 using Domain.IRepositories;
 
-namespace Application.Features.Auth.Commands;
+namespace Application.Features.Auth.Commands.SyncUser;
 
 public record SyncUserCommand(Guid SubUid, string UserName) : ICommand<Result<bool>>;
 

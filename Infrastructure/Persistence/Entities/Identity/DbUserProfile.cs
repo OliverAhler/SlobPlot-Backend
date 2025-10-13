@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Infrastructure.Models.Story;
+using Infrastructure.Persistence.Entities.Story;
 
-namespace Infrastructure.Models.IDM;
+namespace Infrastructure.Persistence.Entities.Identity;
 
-[Table("user_profiles", Schema = "idm")]
+[Table("user_profiles", Schema = "auth")]
 public class DbUserProfile
 {
     [Key]

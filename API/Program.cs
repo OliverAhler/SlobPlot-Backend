@@ -23,8 +23,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddConfigureInfrastructure(config);
-builder.Services.AddConfigureApplication();
+builder.Services.AddInfrastructure(config);
+builder.Services.AddApplication();
 
 // =====================================================
 // ===================== Authentication ================

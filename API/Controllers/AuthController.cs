@@ -1,20 +1,19 @@
 using API.Contracts.Users;
 using API.Extensions;
 using Application.Common.Interfaces;
-using Application.Features.Auth.Commands;
-using Application.Features.Auth.Queries;
+using Application.Features.Auth.Commands.SyncUser;
+using Application.Features.Auth.Queries.GetUserBySub;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using SharedConfig;
 
 namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IDispatcher dispatcher, IOptions<AppSettings> config) : ControllerBase
+public class AuthController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpGet]
+    [Route("user")]
     [Authorize]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
@@ -34,11 +33,9 @@ public class UserController(IDispatcher dispatcher, IOptions<AppSettings> config
     
     [HttpPost]
     [Route("sync")]
+    [InternalGatewayOnly]
     public async Task<IActionResult> SyncUser([FromBody] SyncUserRequest request, CancellationToken cancellationToken)
     {
-        if (!Request.Headers.TryGetValue("X-Internal-Gateway", out var headerValue) || headerValue != config.Value.Gateway.SecretKey)
-            return Unauthorized("This endpoint is only accessible from the gateway");
-        
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 

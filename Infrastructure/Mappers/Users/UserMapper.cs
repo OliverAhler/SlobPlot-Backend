@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
-using Infrastructure.Models.IDM;
 using Domain.Aggregates.Users;
+using Infrastructure.Persistence.Entities.Identity;
 
 namespace Infrastructure.Mappers.Users;
 
@@ -16,12 +16,19 @@ public static class UserMapper
             dbUser.UpdatedAt
         );
     
+    /// <summary>
+    /// Projects DbUser to Domain User in a queryable (translates to SQL).
+    /// Use this for queries that haven't been executed yet.
+    /// </summary>
     public static IQueryable<User> ProjectToDomain(this IQueryable<DbUser> query)
     {
         return query.Select(ToDomainExpression);
     }
     
-    // DbUser → Domain User
+    /// <summary>
+    /// Maps a materialized DbUser to Domain User (in-memory).
+    /// Use this when you already have a DbUser object.
+    /// </summary>
     public static User ToDomain(this DbUser dbUser)
     {
         return User.Reconstitute(

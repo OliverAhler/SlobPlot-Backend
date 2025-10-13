@@ -1,13 +1,12 @@
 using Domain.Aggregates.Users;
 using Domain.IRepositories;
 using Domain.ValueObjects;
-using Infrastructure.Context;
 using Infrastructure.Mappers.Users;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Services;
+namespace Infrastructure.Persistence.Repositories.Identity;
 
-public class UserProfileRepository(ContextUsers context) : IUserProfileRepository
+public class UserProfileRepository(ApplicationDbContext context) : IUserProfileRepository
 {
     public async Task<UserProfile?> GetByUserIdAsync(UserId userId, CancellationToken cancellationToken = default)
     {

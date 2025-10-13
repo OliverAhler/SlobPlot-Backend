@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using Domain.Aggregates.Users;
-using Infrastructure.Models.IDM;
+using Infrastructure.Persistence.Entities.Identity;
 
 namespace Infrastructure.Mappers.Users;
 

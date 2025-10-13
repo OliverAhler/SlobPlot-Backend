@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Infrastructure.Models.Story;
+namespace Infrastructure.Persistence.Entities.Story;
 
 [Table("chapters", Schema = "story")]
 public class DbChapter

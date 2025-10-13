@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Infrastructure.Models.Master;
+using Infrastructure.Persistence.Entities.Master;
 
-namespace Infrastructure.Models.Story;
+namespace Infrastructure.Persistence.Entities.Story;
 
 [Table("story_genres", Schema = "story")]
 public class DbStoryGenre
