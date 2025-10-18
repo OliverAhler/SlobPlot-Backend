@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Infrastructure.Persistence.Entities.Identity;
 using Infrastructure.Persistence.Entities.Master;
 
-namespace Infrastructure.Persistence.Entities.Story;
+namespace Infrastructure.Persistence.Entities.Stories;
 
 [Table("stories", Schema = "story")]
 public class DbStory
@@ -23,7 +23,7 @@ public class DbStory
     public string Title { get; set; } = string.Empty;
     
     [Column("subtitle")]
-    [MaxLength(100)]
+    [MaxLength(255)]
     public string? Subtitle { get; set; }
     
     [Column("summary")]

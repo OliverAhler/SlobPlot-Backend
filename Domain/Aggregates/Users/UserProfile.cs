@@ -5,8 +5,8 @@ namespace Domain.Aggregates.Users;
 
 public class UserProfile : AggregateRoot
 {
-    public UserId UserId { get; private set; }
-    public string DisplayName { get; private set; }
+    public UserId UserId { get; private set; } = null!;
+    public string DisplayName { get; private set; } = null!;
     public string? Bio { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     

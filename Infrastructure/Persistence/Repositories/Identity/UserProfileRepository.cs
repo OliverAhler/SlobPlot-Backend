@@ -1,7 +1,8 @@
+using Application.Features.UserProfiles;
 using Application.IRepositories;
 using Domain.Aggregates.Users;
 using Domain.ValueObjects.Identity;
-using Infrastructure.Mappers.Users;
+using Infrastructure.Mappers.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories.Identity;
@@ -11,6 +12,7 @@ public class UserProfileRepository(ApplicationDbContext context) : IUserProfileR
     public async Task<UserProfile?> GetByUserIdAsync(UserId userId, CancellationToken cancellationToken = default)
     {
         var profile = await context.UserProfiles
+            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.UserId == userId.Value, cancellationToken);
 
         return profile?.ToDomain();

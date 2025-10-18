@@ -8,8 +8,10 @@
 
     <ItemGroup>
       <Folder Include="Features\Auth\Commands\" />
-      <Folder Include="Features\Stories\Commands\" />
-      <Folder Include="Features\Stories\Queries\" />
+      <Folder Include="Features\UserProfiles\Commands\" />
+      <Folder Include="Features\UserProfiles\Queries\" />
+      <Folder Include="Features\Users\Commands\" />
+      <Folder Include="Features\Users\Queries\" />
     </ItemGroup>
 
     <ItemGroup>

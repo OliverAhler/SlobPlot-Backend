@@ -6,9 +6,9 @@ namespace Domain.Aggregates.Stories;
 
 public class Story : AggregateRoot
 {
-    public StoryId Id { get; private set; }
-    public UserId UserId { get; private set; }
-    public string Title { get; private set; }
+    public StoryId Id { get; private set; } = null!;
+    public UserId UserId { get; private set; } = null!;
+    public string Title { get; private set; } = null!;
     public string? SubTitle { get; private set; }
     public string? Summary { get; private set; }
     public bool IsPrivate { get; private set; }
@@ -19,7 +19,7 @@ public class Story : AggregateRoot
     
     
     #region Database Reconstitute
-    public static Story Reconstitute(Guid id, Guid userId, string title, string subTitle, string summary, bool isPrivate, DateTime createdAt, DateTime updatedAt)
+    public static Story Reconstitute(Guid id, Guid userId, string title, string? subTitle, string? summary, bool isPrivate, DateTime createdAt, DateTime updatedAt)
     {
         return new Story
         {

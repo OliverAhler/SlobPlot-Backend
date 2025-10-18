@@ -6,9 +6,9 @@ namespace Domain.Aggregates.Users;
 
 public class User : AggregateRoot
 {
-    public UserId Id { get; private set; }
+    public UserId Id { get; private set; } = null!;
     public Guid SubUid { get; private set; }
-    public string UserName { get; private set; }
+    public string UserName { get; private set; } = null!;
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     

@@ -10,19 +10,13 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IDispatcher dispatcher) : ControllerBase
+public class AuthController(IDispatcher dispatcher, ICurrentUserService currentUserService) : ControllerBase
 {
-    [HttpGet]
-    [Route("user")]
+    [HttpGet("user")]
     [Authorize]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        var userId = User.GetUserId();
-        
-        if (!userId.HasValue)
-            return Unauthorized("Invalid or missing user ID in token");
-        
-        var query = new GetUserByIdPSubQuery(userId.Value);
+        var query = new GetUserByIdPSubQuery(currentUserService.GetUserId());
         
         var result = await dispatcher.Dispatch(query, cancellationToken);
         
@@ -31,20 +25,16 @@ public class AuthController(IDispatcher dispatcher) : ControllerBase
             : NotFound(result.Error);
     }
     
-    [HttpPost]
-    [Route("sync")]
+    [HttpPost("sync")]
     [InternalGatewayOnly]
     public async Task<IActionResult> SyncUser([FromBody] SyncUserRequest request, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         if (!Guid.TryParse(request.SubUid, out var subUid))
             return BadRequest("Invalid SubUid format");
-    
+
         var command = new SyncUserCommand(subUid, request.UserName);
         var result = await dispatcher.Dispatch(command, cancellationToken);
-        
+    
         return result.IsSuccess 
             ? Ok(new SyncUserResponse(result.Value))
             : BadRequest(result.Error); 

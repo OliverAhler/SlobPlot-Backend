@@ -1,26 +1,26 @@
 using Application.Common.Interfaces;
-using Application.IRepositories;
+using Application.Features.Auth.DTOs;
 using Domain.Common;
 
 namespace Application.Features.Auth.Queries.GetUserBySub;
 
-public record GetUserByIdPSubQuery(Guid Sub) : IQuery<Result<GetUserBySubResponse>>;
+public record GetUserByIdPSubQuery(Guid Sub) : IQuery<Result<UserDto>>;
 
-public class GetUserBySubQueryHandler(IUserRepository userRepository) : IQueryHandler<GetUserByIdPSubQuery, Result<GetUserBySubResponse>>
+public class GetUserBySubQueryHandler(IUserQueries userQueries) : IQueryHandler<GetUserByIdPSubQuery, Result<UserDto>>
 {
-    public async Task<Result<GetUserBySubResponse>> Handle(GetUserByIdPSubQuery query, CancellationToken cancellationToken)
+    public async Task<Result<UserDto>> Handle(GetUserByIdPSubQuery query, CancellationToken cancellationToken)
     {
         var sub = query.Sub;
 
         if (sub == Guid.Empty)
-            return Result<GetUserBySubResponse>.Failure("Can't search for user without a valid uid");
+            return Result<UserDto>.Failure("Can't search for user without a valid uid");
         
-        var user = await userRepository.GetUserBySubAsync(sub, cancellationToken);
+        var user = await userQueries.GetUserBySubAsync(sub, cancellationToken);
         
         if(user == null)
-            return Result<GetUserBySubResponse>.Failure("User not found");
+            return Result<UserDto>.Failure("User not found");
 
-        var userResponse = new GetUserBySubResponse(user.Id.Value, user.SubUid, user.UserName, user.CreatedAt);
-        return Result<GetUserBySubResponse>.Success(userResponse);
+        var userResponse = new UserDto(user.Id, user.SubUid, user.UserName, user.CreatedAt);
+        return Result<UserDto>.Success(userResponse);
     }
 }

@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Features.UserProfiles;
 using Application.IRepositories;
 using Domain.Aggregates.Users;
 using Domain.Common;
@@ -7,7 +8,7 @@ namespace Application.Features.Auth.Commands.SyncUser;
 
 public record SyncUserCommand(Guid SubUid, string UserName) : ICommand<Result<bool>>;
 
-public class SyncUserCommandHandler(IUserRepository userRepository, IUserProfileRepository userProfileRepository, IUnitOfWork context) : ICommandHandler<SyncUserCommand, Result<bool>>
+public class SyncUserCommandHandler(IUserRepository userRepository, IUserProfileRepository userProfileRepository, IUnitOfWork unitOfWork) : ICommandHandler<SyncUserCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(SyncUserCommand command, CancellationToken cancellationToken)
     {
@@ -17,11 +18,14 @@ public class SyncUserCommandHandler(IUserRepository userRepository, IUserProfile
         //Check updates if user exists
         if (existingUser != null)
         {
+            // Only update if changed
+            if (existingUser.UserName == command.UserName) return Result<bool>.Success(false);
+            
             existingUser.UpdateUserName(command.UserName);
             userRepository.UpdateUser(existingUser);
-        
-            await context.SaveChangesAsync(cancellationToken);
-            return Result<bool>.Success(false); // Not a new user
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+            
+            return Result<bool>.Success(false);
         }
         
         // Create new user
@@ -32,14 +36,14 @@ public class SyncUserCommandHandler(IUserRepository userRepository, IUserProfile
     
         var newUser = userResult.Value;
         
-        var profileResult = UserProfile.Create(newUser.Id!, command.UserName);
+        var profileResult = UserProfile.Create(newUser.Id, command.UserName);
     
         if (!profileResult.IsSuccess)
             return Result<bool>.Failure(profileResult.Error);
         
         userRepository.AddUser(newUser);
         userProfileRepository.AddUserProfile(profileResult.Value);
-        await context.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     
         return Result<bool>.Success(true); // New user created
     }

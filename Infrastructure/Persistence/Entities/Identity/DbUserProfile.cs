@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Infrastructure.Persistence.Entities.Story;
+using Infrastructure.Persistence.Entities.Stories;
 
 namespace Infrastructure.Persistence.Entities.Identity;
 

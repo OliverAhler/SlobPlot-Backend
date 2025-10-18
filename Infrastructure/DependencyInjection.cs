@@ -1,7 +1,11 @@
+using Application.Features.Auth;
+using Application.Features.Stories;
+using Application.Features.UserProfiles;
 using Application.IRepositories;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Persistence.Repositories.Identity;
+using Infrastructure.Persistence.Repositories.Stories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SharedConfig;
@@ -12,9 +16,15 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, AppSettings config)
     {
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
+        //Identity
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
+        //Stories
+        services.AddScoped<IStoryRepository, StoryRepository>();
+        
         
         services.AddDbContext<ApplicationDbContext>((options) =>
         {

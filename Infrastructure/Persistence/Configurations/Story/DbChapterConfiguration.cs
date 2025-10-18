@@ -1,4 +1,4 @@
-using Infrastructure.Persistence.Entities.Story;
+using Infrastructure.Persistence.Entities.Stories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

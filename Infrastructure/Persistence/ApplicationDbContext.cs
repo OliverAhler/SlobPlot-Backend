@@ -1,6 +1,6 @@
 using Infrastructure.Persistence.Entities.Identity;
 using Infrastructure.Persistence.Entities.Master;
-using Infrastructure.Persistence.Entities.Story;
+using Infrastructure.Persistence.Entities.Stories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;

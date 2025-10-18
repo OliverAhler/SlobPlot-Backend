@@ -1,8 +1,7 @@
-using System.Linq.Expressions;
 using Domain.Aggregates.Users;
 using Infrastructure.Persistence.Entities.Identity;
 
-namespace Infrastructure.Mappers.Users;
+namespace Infrastructure.Mappers.Identity;
 
 public static class UserProfileMapper
 {
