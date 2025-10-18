@@ -1,5 +1,5 @@
 using Domain.Common;
-using Domain.ValueObjects;
+using Domain.ValueObjects.Identity;
 
 namespace Domain.Aggregates.Users;
 
@@ -11,10 +11,25 @@ public class UserProfile : AggregateRoot
     public DateTime UpdatedAt { get; private set; }
     
     private UserProfile() { }
+
+    #region Database Reconstitute
+    public static UserProfile Reconstitute(Guid userId, string displayName, string? bio, DateTime updatedAt)
+    {
+        return new UserProfile
+        {
+            UserId = UserId.From(userId),
+            DisplayName = displayName,
+            Bio = bio,
+            UpdatedAt = updatedAt
+        };
+    }
+    #endregion
     
-    // Create new profile
     public static Result<UserProfile> Create(UserId userId, string displayName)
     {
+        if(userId.Value == Guid.Empty)
+            return Result<UserProfile>.Failure("Invalid userId");
+        
         if (string.IsNullOrWhiteSpace(displayName))
             return Result<UserProfile>.Failure("Display name is required");
         
@@ -29,20 +44,8 @@ public class UserProfile : AggregateRoot
             UpdatedAt = DateTime.UtcNow
         });
     }
-    
-    // Reconstitute from DB
-    public static UserProfile Reconstitute(Guid userId, string displayName, string? bio, DateTime updatedAt)
-    {
-        return new UserProfile
-        {
-            UserId = UserId.From(userId),
-            DisplayName = displayName,
-            Bio = bio,
-            UpdatedAt = updatedAt
-        };
-    }
-    
-    // Business logic
+
+    #region User Methods
     public Result UpdateDisplayName(string newDisplayName)
     {
         if (string.IsNullOrWhiteSpace(newDisplayName))
@@ -65,4 +68,5 @@ public class UserProfile : AggregateRoot
         UpdatedAt = DateTime.UtcNow;
         return Result.Success();
     }
+    #endregion
 }

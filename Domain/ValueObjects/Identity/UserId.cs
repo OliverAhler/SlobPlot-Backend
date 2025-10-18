@@ -1,4 +1,4 @@
-namespace Domain.ValueObjects;
+namespace Domain.ValueObjects.Identity;
 
 public record UserId(Guid Value)
 {

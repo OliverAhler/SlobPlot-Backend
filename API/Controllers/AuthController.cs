@@ -47,7 +47,6 @@ public class AuthController(IDispatcher dispatcher) : ControllerBase
         
         return result.IsSuccess 
             ? Ok(new SyncUserResponse(result.Value))
-            : BadRequest(result.Error);
-
+            : BadRequest(result.Error); 
     }
 }

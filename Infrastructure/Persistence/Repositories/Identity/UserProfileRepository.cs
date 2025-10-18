@@ -1,6 +1,6 @@
+using Application.IRepositories;
 using Domain.Aggregates.Users;
-using Domain.IRepositories;
-using Domain.ValueObjects;
+using Domain.ValueObjects.Identity;
 using Infrastructure.Mappers.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,28 +16,15 @@ public class UserProfileRepository(ApplicationDbContext context) : IUserProfileR
         return profile?.ToDomain();
     }
 
-    public async Task AddAsync(UserProfile profile, CancellationToken cancellationToken = default)
+    public void AddUserProfile(UserProfile profile)
     {
         var dbProfile = profile.ToDb();
         context.UserProfiles.Add(dbProfile);
-        
-        await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(UserProfile profile, CancellationToken cancellationToken = default)
+    public void UpdateUserProfile(UserProfile profile)
     {
-        var dbProfile = await context.UserProfiles
-            .FirstOrDefaultAsync(p => p.UserId == profile.UserId.Value, cancellationToken);
-        
-        if (dbProfile == null)
-            throw new InvalidOperationException($"User with ID {dbProfile?.UserId} not found");
-        
-        // Update properties from domain model
-        dbProfile.Bio = profile.Bio;
-        dbProfile.DisplayName = profile.DisplayName;
-        dbProfile.UpdatedAt = profile.UpdatedAt;
-        
-        await context.SaveChangesAsync(cancellationToken);
-
+        var dbProfile = profile.ToDb();
+        context.UserProfiles.Update(dbProfile);
     }
 }

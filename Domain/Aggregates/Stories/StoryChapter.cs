@@ -1,5 +1,6 @@
 using Domain.Common;
 using Domain.ValueObjects;
+using Domain.ValueObjects.Story;
 
 namespace Domain.Aggregates.Stories;
 

@@ -1,5 +1,6 @@
-using Domain.IRepositories;
+using Application.IRepositories;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Repositories;
 using Infrastructure.Persistence.Repositories.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         services.AddDbContext<ApplicationDbContext>((options) =>
         {
