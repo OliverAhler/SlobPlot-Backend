@@ -1,0 +1,22 @@
+#Add this in slobplot-api same place as deployment.yaml and service.yaml
+#name it 'network-policy.yaml'
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: slobplot-api-internal-protection
+  namespace: slobplot
+spec:
+  podSelector:
+    matchLabels:
+      app: slobplot-api
+  policyTypes:
+    - Ingress
+  ingress:
+    # ONLY allow traffic from gateway
+    - from:
+      - podSelector:
+          matchLabels:
+            app: slobplot-gateway
+      ports:
+        - protocol: TCP
+          port: 8080
