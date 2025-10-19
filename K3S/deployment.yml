@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slobplot-api
+  namespace: slobplot
+  labels:
+    app: slobplot-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slobplot-api
+  template:
+    metadata:
+      labels:
+        app: slobplot-api
+    spec:
+      imagePullSecrets:
+        - name: harbor-slobplot-pull
+      containers:
+        - name: slobplot-api
+          image: harbor.seira.dev/slobplot/slobplot-api:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+            - name: AppSettings__Gateway__SecretKey
+              valueFrom:
+                secretKeyRef:
+                  name: slobplot-prod-secrets
+                  key: gateway-backend-secret
+            - name: AppSettings__Database__DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: slobplot-prod-secrets
+                  key: db-connection-string

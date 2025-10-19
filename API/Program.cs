@@ -1,4 +1,7 @@
+using API.Middleware;
+using API.Services;
 using Application;
+using Application.Common.Interfaces;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -23,8 +26,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddConfigureInfrastructure(config);
-builder.Services.AddConfigureApplication();
+builder.Services.AddInfrastructure(config);
+builder.Services.AddApplication();
 
 // =====================================================
 // ===================== Authentication ================
@@ -55,6 +58,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -63,6 +69,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseGlobalExceptionHandler();
 
 app.UseHttpsRedirection();
 
