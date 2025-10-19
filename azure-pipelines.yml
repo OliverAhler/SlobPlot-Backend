@@ -1,0 +1,62 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - API/**
+      - SlobPlot-Backend.sln
+
+pool:
+  name: default
+
+variables:
+  solution: '**/*.sln'
+  buildConfiguration: 'Release'
+  imageName: slobplot/slobplot-api
+
+steps:
+- checkout: self
+
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '8.0.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+- task: DotNetCoreCLI@2
+  displayName: Restore NuGet packages
+  inputs:
+    command: restore
+    projects: '**/*.sln'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build solution'
+  inputs:
+    command: build
+    projects: '**/*.sln'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run tests'
+  inputs:
+    command: test
+    projects: '**/*.sln'
+    arguments: '--configuration $(buildConfiguration) --no-build --verbosity normal'
+
+- bash: |
+    shortSha=$(git rev-parse --short=7 HEAD)
+    echo "##vso[task.setvariable variable=shortSha]$shortSha"
+  displayName: 'Set short SHA variable'
+
+- task: Docker@2
+  inputs:
+    command: buildAndPush
+    repository: $(imageName)
+    dockerfile: API/Dockerfile
+    tags: |
+      $(shortSha)
+      latest
+    containerRegistry: HarborServiceConnection
+    buildContext: $(Build.SourcesDirectory)
+  displayName: 'Build and push Docker image'
