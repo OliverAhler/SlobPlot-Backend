@@ -25,7 +25,6 @@ public static class DependencyInjection
         //Stories
         services.AddScoped<IStoryRepository, StoryRepository>();
         
-        
         services.AddDbContext<ApplicationDbContext>((options) =>
         {
             var dbSettings = config?.Database;

@@ -31,7 +31,7 @@ spec:
                 secretKeyRef:
                   name: slobplot-prod-secrets
                   key: gateway-backend-secret
-            - name: AppSettings__Database__DefaultConnection
+            - name: AppSettings__Database__ConnectionString
               valueFrom:
                 secretKeyRef:
                   name: slobplot-prod-secrets
