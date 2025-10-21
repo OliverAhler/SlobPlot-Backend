@@ -1,6 +1,4 @@
 using Application.Features.Auth.DTOs;
-using Application.Features.Auth.Queries.GetUserBySub;
-using Domain.Aggregates.Users;
 
 namespace Application.Features.Auth;
 

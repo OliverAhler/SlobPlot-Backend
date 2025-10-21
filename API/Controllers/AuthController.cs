@@ -1,6 +1,7 @@
 using API.Contracts.Users;
 using API.Extensions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Handlers;
 using Application.Features.Auth.Commands.SyncUser;
 using Application.Features.Auth.Queries.GetUserBySub;
 using Microsoft.AspNetCore.Authorization;
