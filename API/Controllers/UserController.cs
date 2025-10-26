@@ -1,4 +1,6 @@
 using API.Contracts.Users;
+using API.Contracts.Users.GetAuthenticatedUser;
+using API.Contracts.Users.SyncUser;
 using API.Extensions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Handlers;
@@ -11,9 +13,9 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IDispatcher dispatcher, ICurrentUserService currentUserService) : ControllerBase
+public class UserController(IDispatcher dispatcher, ICurrentUserService currentUserService) : ControllerBase
 {
-    [HttpGet("user")]
+    [HttpGet]
     [Authorize]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
@@ -22,7 +24,7 @@ public class AuthController(IDispatcher dispatcher, ICurrentUserService currentU
         var result = await dispatcher.Dispatch(query, cancellationToken);
         
         return result.IsSuccess 
-            ? Ok(result.Value) 
+            ? Ok(result.Value.ToResponse()) 
             : NotFound(result.Error);
     }
     

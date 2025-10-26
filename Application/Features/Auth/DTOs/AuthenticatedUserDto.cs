@@ -1,6 +1,6 @@
 namespace Application.Features.Auth.DTOs;
 
-public record UserDto(
+public record AuthenticatedUserDto(
     Guid Id,
     Guid SubUid,
     string UserName,

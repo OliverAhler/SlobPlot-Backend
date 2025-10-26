@@ -1,3 +1,3 @@
-namespace API.Contracts.Users;
+namespace API.Contracts.Users.SyncUser;
 
 public record SyncUserResponse(bool isNewUser);

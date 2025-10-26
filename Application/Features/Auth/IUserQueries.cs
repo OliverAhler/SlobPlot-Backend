@@ -4,6 +4,6 @@ namespace Application.Features.Auth;
 
 public interface IUserQueries
 {
-    Task<UserDto?> GetUserByIdAsync(Guid id, CancellationToken cancellationToken);
-    Task<UserDto?> GetUserBySubAsync(Guid sub, CancellationToken cancellationToken);
+    Task<AuthenticatedUserDto?> GetUserByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<AuthenticatedUserDto?> GetUserBySubAsync(Guid sub, CancellationToken cancellationToken);
 }

@@ -9,12 +9,12 @@ namespace Infrastructure.Persistence.Queries.Identity;
 
 public class UserQueries(ApplicationDbContext context) : IUserQueries
 {
-    public async Task<UserDto?> GetUserByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<AuthenticatedUserDto?> GetUserByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await context.Users
             .AsNoTracking()
             .Where(u => u.Id == id && !u.IsDeleted)
-            .Select(u => new UserDto(
+            .Select(u => new AuthenticatedUserDto(
                 u.Id,
                 u.SubUid,
                 u.UserName,
@@ -23,12 +23,12 @@ public class UserQueries(ApplicationDbContext context) : IUserQueries
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<UserDto?> GetUserBySubAsync(Guid subUid, CancellationToken cancellationToken )
+    public async Task<AuthenticatedUserDto?> GetUserBySubAsync(Guid subUid, CancellationToken cancellationToken )
     {
         return await context.Users
             .AsNoTracking()
             .Where(u => u.SubUid == subUid && !u.IsDeleted)
-            .Select(u => new UserDto(
+            .Select(u => new AuthenticatedUserDto(
                 u.Id,
                 u.SubUid,
                 u.UserName,
