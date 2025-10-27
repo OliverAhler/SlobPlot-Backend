@@ -1,4 +1,5 @@
 using Domain.Common;
+using Domain.Constants;
 using Domain.ValueObjects.Identity;
 using Domain.ValueObjects.Story;
 
@@ -12,6 +13,8 @@ public class Story : AggregateRoot
     public string? SubTitle { get; private set; }
     public string? Summary { get; private set; }
     public bool IsPrivate { get; private set; }
+    
+    public int StoryStatusId { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     
@@ -19,7 +22,7 @@ public class Story : AggregateRoot
     
     
     #region Database Reconstitute
-    public static Story Reconstitute(Guid id, Guid userId, string title, string? subTitle, string? summary, bool isPrivate, DateTime createdAt, DateTime updatedAt)
+    public static Story Reconstitute(Guid id, Guid userId, string title, string? subTitle, string? summary, bool isPrivate, int statusId, DateTime createdAt, DateTime updatedAt)
     {
         return new Story
         {
@@ -29,6 +32,7 @@ public class Story : AggregateRoot
             SubTitle = subTitle,
             Summary = summary,
             IsPrivate = isPrivate,
+            StoryStatusId = statusId,
             CreatedAt = createdAt,
             UpdatedAt = updatedAt
         };
@@ -58,6 +62,7 @@ public class Story : AggregateRoot
             Title = title,
             SubTitle = subTitle,
             Summary = summary,
+            StoryStatusId = StoryStatusIds.Planned,
             IsPrivate = isPrivate,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow

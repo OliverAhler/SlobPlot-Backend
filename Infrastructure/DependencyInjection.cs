@@ -1,9 +1,12 @@
 using Application.Features.Auth;
+using Application.Features.Genres;
+using Application.Features.Statuses;
 using Application.Features.Stories;
 using Application.Features.UserProfiles;
 using Application.IRepositories;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Queries.Identity;
+using Infrastructure.Persistence.Queries.Master;
 using Infrastructure.Persistence.Queries.Stories;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Persistence.Repositories.Identity;
@@ -20,6 +23,10 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, AppSettings config)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
+        //Master Queries
+        services.AddScoped<IGenreQueries, GenreQueries>();
+        services.AddScoped<IStatusQueries, StatusQueries>();
         
         //Identity Commands
         services.AddScoped<IUserRepository, UserRepository>();

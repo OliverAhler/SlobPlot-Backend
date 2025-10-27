@@ -9,7 +9,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     //Master
     public DbSet<DbGenre> Genre { get; set; } = null!;
-    public DbSet<DbStoryStatus> Status { get; set; } = null!;
+    public DbSet<DbStatus> Status { get; set; } = null!;
     
     //Identity
     public DbSet<DbUser> Users { get; set; } = null!;

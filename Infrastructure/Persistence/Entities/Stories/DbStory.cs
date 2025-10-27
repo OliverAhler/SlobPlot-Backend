@@ -47,7 +47,7 @@ public class DbStory
     
     // Navigation
     public DbUserProfile UserProfile { get; set; } = null!;
-    public DbStoryStatus StoryStatus { get; set; } = null!;
+    public DbStatus Status { get; set; } = null!;
     public ICollection<DbStoryGenre> StoryGenres { get; set; } = new List<DbStoryGenre>();
     public ICollection<DbChapter> Chapters { get; set; } = new List<DbChapter>();
 }

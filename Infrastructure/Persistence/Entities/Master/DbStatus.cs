@@ -6,7 +6,7 @@ namespace Infrastructure.Persistence.Entities.Master;
 
 
 [Table("story_status", Schema = "master")]
-public class DbStoryStatus
+public class DbStatus
 {
     [Key]
     [Column("id")]

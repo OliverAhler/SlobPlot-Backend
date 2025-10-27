@@ -21,7 +21,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
         
         return result.IsSuccess 
             ? Ok(result.Value) 
-            : NotFound(result.Error);
+            : BadRequest(result.Error);
     }
     
     [HttpPost]
