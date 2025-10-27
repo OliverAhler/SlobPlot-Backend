@@ -1,4 +1,3 @@
-using API.Contracts.Users;
 using API.Contracts.Users.GetAuthenticatedUser;
 using API.Contracts.Users.SyncUser;
 using API.Extensions;
@@ -19,7 +18,7 @@ public class UserController(IDispatcher dispatcher, ICurrentUserService currentU
     [Authorize]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        var query = new GetUserByIdPSubQuery(currentUserService.GetUserId());
+        var query = new GetUserByIdPSubQuery(currentUserService.GetSubId());
         
         var result = await dispatcher.Dispatch(query, cancellationToken);
         

@@ -16,6 +16,10 @@ public class DbStoryStatus
     [MaxLength(100)]
     public string DisplayName { get; set; } = string.Empty;
     
+    [Column("status_description")]
+    [MaxLength(255)]
+    public string Description { get; set; } = string.Empty;
+    
     // Navigation
     public ICollection<DbStory> Stories { get; set; } = new List<DbStory>();
 }

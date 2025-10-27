@@ -28,13 +28,13 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     [Authorize]
     public async Task<IActionResult> CreateStory([FromBody] CreateStoryRequest request, CancellationToken cancellationToken)
     {
-        var userId = currentUserService.GetUserId();
+        var userId = await currentUserService.GetUserIdAsync(cancellationToken);
         
         var command = new CreateStoryCommand(userId, request.Title, request.SubTitle, request.Summary, request.IsPrivate);
         var result = await dispatcher.Dispatch(command, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result.Value) 
-            : NotFound(result.Error);
+            : BadRequest(result.Error);
     }
 }

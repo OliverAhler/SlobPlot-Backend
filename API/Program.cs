@@ -22,6 +22,7 @@ if (config?.Database is null)
     throw new InvalidOperationException("Database configuration is missing");
 
 builder.Services.AddControllers();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
