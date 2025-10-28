@@ -17,6 +17,7 @@ public class Story : AggregateRoot
     public int StoryStatusId { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
+    public int[] StoryGenres {  get; private set; }
     
     private Story() {}
     
@@ -39,10 +40,13 @@ public class Story : AggregateRoot
     }
     #endregion
     
-    public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPrivate)
+    public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPrivate, int[] genreIds)
     {
         if(userId.Value == Guid.Empty)
             return Result<Story>.Failure("Invalid userId");
+        
+        if(genreIds.Length is 0 or > 5)
+            return Result<Story>.Failure("Amount of genres for a story must be between 1 and 5");
         
         title = title.Trim();
         subTitle = string.IsNullOrWhiteSpace(subTitle) ? null : subTitle.Trim();
@@ -65,7 +69,8 @@ public class Story : AggregateRoot
             StoryStatusId = StoryStatusIds.Planned,
             IsPrivate = isPrivate,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            StoryGenres = genreIds
         });
     }
 

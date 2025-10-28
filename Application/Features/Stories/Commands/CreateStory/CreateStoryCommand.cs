@@ -6,14 +6,14 @@ using Domain.ValueObjects.Identity;
 
 namespace Application.Features.Stories.Commands.CreateStory;
 
-public record CreateStoryCommand(Guid UserId, string Title, string SubTitle, string Summary, bool IsPrivate) : ICommand<Result<Guid>>;
+public record CreateStoryCommand(Guid UserId, string Title, string SubTitle, string Summary, bool IsPrivate, int[] GenreIds) : ICommand<Result<Guid>>;
 
 public class CreateStoryCommandHandler(IStoryRepository storyRepository, IUnitOfWork unitOfWork) : ICommandHandler<CreateStoryCommand, Result<Guid>> {
     
     public async Task<Result<Guid>> Handle(CreateStoryCommand command, CancellationToken cancellationToken)
     {
         var userId = UserId.From(command.UserId);
-        var storyResult = Story.Create(userId, command.Title, command.SubTitle, command.Summary, command.IsPrivate);
+        var storyResult = Story.Create(userId, command.Title, command.SubTitle, command.Summary, command.IsPrivate, command.GenreIds);
         
         if(!storyResult.IsSuccess)
             return Result<Guid>.Failure(storyResult.Error);

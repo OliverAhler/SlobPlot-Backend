@@ -54,7 +54,13 @@ public static class StoryMapper
             StoryStatusId = story.StoryStatusId,
             IsPrivate = story.IsPrivate,
             CreatedAt = story.CreatedAt,
-            UpdatedAt = story.UpdatedAt
+            UpdatedAt = story.UpdatedAt,
+            StoryGenres = story.StoryGenres.Select(genreId => new DbStoryGenre
+            {
+                StoryId = story.Id.Value,
+                GenreId = genreId
+            }).ToList()
+
         };
     }
 }

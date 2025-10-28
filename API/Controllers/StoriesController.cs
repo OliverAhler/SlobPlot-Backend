@@ -30,7 +30,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     {
         var userId = await currentUserService.GetUserIdAsync(cancellationToken);
         
-        var command = new CreateStoryCommand(userId, request.Title, request.SubTitle, request.Summary, request.IsPrivate);
+        var command = new CreateStoryCommand(userId, request.Title, request.SubTitle, request.Summary, request.IsPrivate, request.GenreIds);
         var result = await dispatcher.Dispatch(command, cancellationToken);
         
         return result.IsSuccess 
