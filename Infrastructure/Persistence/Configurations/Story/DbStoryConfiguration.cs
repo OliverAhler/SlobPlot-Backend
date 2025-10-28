@@ -13,7 +13,7 @@ public class DbStoryConfiguration : IEntityTypeConfiguration<DbStory>
             .HasForeignKey(s => s.UserId)
             .OnDelete(DeleteBehavior.Restrict);
             
-        builder.HasOne(s => s.StoryStatus)
+        builder.HasOne(s => s.Status)
             .WithMany(ss => ss.Stories)
             .HasForeignKey(s => s.StoryStatusId)
             .OnDelete(DeleteBehavior.Restrict);

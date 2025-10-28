@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Common;

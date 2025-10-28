@@ -6,7 +6,7 @@ namespace Infrastructure.Persistence.Entities.Master;
 
 
 [Table("story_status", Schema = "master")]
-public class DbStoryStatus
+public class DbStatus
 {
     [Key]
     [Column("id")]
@@ -15,6 +15,10 @@ public class DbStoryStatus
     [Column("display_name")]
     [MaxLength(100)]
     public string DisplayName { get; set; } = string.Empty;
+    
+    [Column("status_description")]
+    [MaxLength(255)]
+    public string Description { get; set; } = string.Empty;
     
     // Navigation
     public ICollection<DbStory> Stories { get; set; } = new List<DbStory>();

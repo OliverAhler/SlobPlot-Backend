@@ -14,7 +14,8 @@ public static class StoryMapper
             dbStory.Title,
             dbStory.Subtitle,
             dbStory.Summary,
-            dbStory.IsPrivate, 
+            dbStory.IsPrivate,
+            dbStory.StoryStatusId,
             dbStory.CreatedAt,
             dbStory.UpdatedAt
         );
@@ -34,6 +35,7 @@ public static class StoryMapper
             dbStory.Subtitle,
             dbStory.Summary,
             dbStory.IsPrivate,
+            dbStory.StoryStatusId,
             dbStory.CreatedAt,
             dbStory.UpdatedAt
         );
@@ -49,9 +51,16 @@ public static class StoryMapper
             Title = story.Title,
             Subtitle = story.SubTitle,
             Summary = story.Summary,
+            StoryStatusId = story.StoryStatusId,
             IsPrivate = story.IsPrivate,
             CreatedAt = story.CreatedAt,
-            UpdatedAt = story.UpdatedAt
+            UpdatedAt = story.UpdatedAt,
+            StoryGenres = story.StoryGenres.Select(genreId => new DbStoryGenre
+            {
+                StoryId = story.Id.Value,
+                GenreId = genreId
+            }).ToList()
+
         };
     }
 }

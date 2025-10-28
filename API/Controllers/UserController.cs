@@ -1,6 +1,8 @@
-using API.Contracts.Users;
+using API.Contracts.Users.GetAuthenticatedUser;
+using API.Contracts.Users.SyncUser;
 using API.Extensions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Handlers;
 using Application.Features.Auth.Commands.SyncUser;
 using Application.Features.Auth.Queries.GetUserBySub;
 using Microsoft.AspNetCore.Authorization;
@@ -10,18 +12,18 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IDispatcher dispatcher, ICurrentUserService currentUserService) : ControllerBase
+public class UserController(IDispatcher dispatcher, ICurrentUserService currentUserService) : ControllerBase
 {
-    [HttpGet("user")]
+    [HttpGet]
     [Authorize]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        var query = new GetUserByIdPSubQuery(currentUserService.GetUserId());
+        var query = new GetUserByIdPSubQuery(currentUserService.GetSubId());
         
         var result = await dispatcher.Dispatch(query, cancellationToken);
         
         return result.IsSuccess 
-            ? Ok(result.Value) 
+            ? Ok(result.Value.ToResponse()) 
             : NotFound(result.Error);
     }
     

@@ -1,13 +1,19 @@
 using Application.Features.Auth;
+using Application.Features.Genres;
+using Application.Features.Statuses;
 using Application.Features.Stories;
 using Application.Features.UserProfiles;
 using Application.IRepositories;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Queries.Identity;
+using Infrastructure.Persistence.Queries.Master;
+using Infrastructure.Persistence.Queries.Stories;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Persistence.Repositories.Identity;
 using Infrastructure.Persistence.Repositories.Stories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using SharedConfig;
 
 namespace Infrastructure;
@@ -18,13 +24,24 @@ public static class DependencyInjection
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         
-        //Identity
+        //Master Queries
+        services.AddScoped<IGenreQueries, GenreQueries>();
+        services.AddScoped<IStatusQueries, StatusQueries>();
+        
+        //Identity Commands
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         
-        //Stories
+        //Identity Queries
+        services.AddScoped<IUserQueries, UserQueries>();
+        services.AddScoped<IUserProfileQueries, UserProfileQueries>();
+        
+        //Story Commands
         services.AddScoped<IStoryRepository, StoryRepository>();
         
+        //Story Queries
+        services.AddScoped<IStoryQueries, StoryQueries>();
+                
         services.AddDbContext<ApplicationDbContext>((options) =>
         {
             var dbSettings = config?.Database;

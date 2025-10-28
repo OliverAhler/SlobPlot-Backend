@@ -9,7 +9,7 @@ public static class ClaimsPrincipalExtensions
         return user.FindFirst("nickname")?.Value;
     }
     
-    public static Guid? GetUserId(this ClaimsPrincipal user)
+    public static Guid? GetSubId(this ClaimsPrincipal user)
     {
         var subClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         return Guid.TryParse(subClaim, out var userId) ? userId : null;

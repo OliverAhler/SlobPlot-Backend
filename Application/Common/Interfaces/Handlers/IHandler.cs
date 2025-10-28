@@ -1,3 +1,3 @@
-namespace Application.Common.Interfaces;
+namespace Application.Common.Interfaces.Handlers;
 
 public interface IHandler { }

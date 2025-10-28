@@ -1,4 +1,5 @@
 using Domain.Common;
+using Domain.Constants;
 using Domain.ValueObjects.Identity;
 using Domain.ValueObjects.Story;
 
@@ -12,14 +13,17 @@ public class Story : AggregateRoot
     public string? SubTitle { get; private set; }
     public string? Summary { get; private set; }
     public bool IsPrivate { get; private set; }
+    
+    public int StoryStatusId { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
+    public int[] StoryGenres {  get; private set; }
     
     private Story() {}
     
     
     #region Database Reconstitute
-    public static Story Reconstitute(Guid id, Guid userId, string title, string? subTitle, string? summary, bool isPrivate, DateTime createdAt, DateTime updatedAt)
+    public static Story Reconstitute(Guid id, Guid userId, string title, string? subTitle, string? summary, bool isPrivate, int statusId, DateTime createdAt, DateTime updatedAt)
     {
         return new Story
         {
@@ -29,16 +33,20 @@ public class Story : AggregateRoot
             SubTitle = subTitle,
             Summary = summary,
             IsPrivate = isPrivate,
+            StoryStatusId = statusId,
             CreatedAt = createdAt,
             UpdatedAt = updatedAt
         };
     }
     #endregion
     
-    public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPrivate)
+    public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPrivate, int[] genreIds)
     {
         if(userId.Value == Guid.Empty)
             return Result<Story>.Failure("Invalid userId");
+        
+        if(genreIds.Length is 0 or > 5)
+            return Result<Story>.Failure("Amount of genres for a story must be between 1 and 5");
         
         title = title.Trim();
         subTitle = string.IsNullOrWhiteSpace(subTitle) ? null : subTitle.Trim();
@@ -58,9 +66,11 @@ public class Story : AggregateRoot
             Title = title,
             SubTitle = subTitle,
             Summary = summary,
+            StoryStatusId = StoryStatusIds.Planned,
             IsPrivate = isPrivate,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            StoryGenres = genreIds
         });
     }
 
