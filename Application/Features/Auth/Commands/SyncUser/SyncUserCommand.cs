@@ -1,15 +1,13 @@
 using Application.Common.Interfaces;
-using Application.Features.UserProfiles;
 using Application.IRepositories;
 using Domain.Common;
 using Domain.UserManagement.Aggregates;
-using Domain.UserManagement.Entities;
 
 namespace Application.Features.Auth.Commands.SyncUser;
 
 public record SyncUserCommand(Guid SubUid, string UserName) : ICommand<Result<bool>>;
 
-public class SyncUserCommandHandler(IUserRepository userRepository, IUserProfileRepository userProfileRepository, IUnitOfWork unitOfWork) : ICommandHandler<SyncUserCommand, Result<bool>>
+public class SyncUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork) : ICommandHandler<SyncUserCommand, Result<bool>>
 {
     public async Task<Result<bool>> Handle(SyncUserCommand command, CancellationToken cancellationToken)
     {
@@ -34,16 +32,9 @@ public class SyncUserCommandHandler(IUserRepository userRepository, IUserProfile
     
         if (!userResult.IsSuccess)
             return Result<bool>.Failure(userResult.Error);
-    
-        var newUser = userResult.Value;
         
-        var profileResult = UserProfile.Create(newUser.Id, command.UserName);
-    
-        if (!profileResult.IsSuccess)
-            return Result<bool>.Failure(profileResult.Error);
-        
-        userRepository.AddUser(newUser);
-        userProfileRepository.AddUserProfile(profileResult.Value);
+        userRepository.AddUser(userResult.Value);
+        // userProfileRepository.AddUserProfile(profileResult.Value);
         await unitOfWork.SaveChangesAsync(cancellationToken);
     
         return Result<bool>.Success(true); // New user created

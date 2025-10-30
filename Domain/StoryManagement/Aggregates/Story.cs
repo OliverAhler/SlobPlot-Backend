@@ -1,8 +1,8 @@
 using Domain.Common;
 using Domain.StoryManagement.Entities;
 using Domain.StoryManagement.ValueObjects;
-using Domain.ValueObjects.Identity;
-using Domain.ValueObjects.Story;
+using Domain.UserManagement.ValueObjects;
+
 
 namespace Domain.StoryManagement.Aggregates;
 
@@ -23,29 +23,11 @@ public class Story : AggregateRoot<StoryId>
     public IReadOnlyCollection<StoryChapter> Chapters => _chapters.AsReadOnly();
     
     // Genres collection
-    private readonly List<int> _genreIds = new();
+    internal readonly List<int> _genreIds = new();
     public IReadOnlyCollection<int> GenreIds => _genreIds.AsReadOnly();
     
     private Story() {}
     
-    
-    #region Database Reconstitute
-    internal static Story Reconstitute(Guid id, Guid userId, string title, string? subTitle, string? summary, bool isPrivate, int statusId, DateTime createdAt, DateTime updatedAt)
-    {
-        return new Story
-        {
-            Id = StoryId.From(id),
-            AuthorId = UserId.From(userId),
-            Title = title,
-            SubTitle = subTitle,
-            Summary = summary,
-            IsPrivate = isPrivate,
-            StoryStatusId = statusId,
-            CreatedAt = createdAt,
-            UpdatedAt = updatedAt
-        };
-    }
-    #endregion
     
     public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPrivate, int[] genreIds)
     {

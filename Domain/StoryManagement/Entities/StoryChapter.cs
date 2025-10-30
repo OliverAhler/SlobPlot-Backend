@@ -1,5 +1,5 @@
 using Domain.Common;
-using Domain.ValueObjects.Story;
+using Domain.StoryManagement.ValueObjects;
 
 namespace Domain.StoryManagement.Entities;
 

@@ -1,8 +1,8 @@
-using Infrastructure.Persistence.Entities.Stories;
+using Infrastructure.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.Configurations.Story;
+namespace Infrastructure.Persistence.Configurations.Stories;
 
 public class DbStoryGenreConfiguration : IEntityTypeConfiguration<DbStoryGenre>
 {
@@ -10,14 +10,10 @@ public class DbStoryGenreConfiguration : IEntityTypeConfiguration<DbStoryGenre>
     {
         builder.HasKey(sg => new { sg.StoryId, sg.GenreId });
         
-        builder.HasOne(sg => sg.Story)
-            .WithMany(s => s.StoryGenres)
-            .HasForeignKey(sg => sg.StoryId)
-            .OnDelete(DeleteBehavior.Cascade);
-            
         builder.HasOne(sg => sg.Genre)
-            .WithMany(g => g.StoryGenres)
+            .WithMany()
             .HasForeignKey(sg => sg.GenreId)
             .OnDelete(DeleteBehavior.Restrict);
     }
+
 }

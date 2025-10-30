@@ -2,7 +2,7 @@ using Application.Common.Interfaces;
 using Application.IRepositories;
 using Domain.Common;
 using Domain.StoryManagement.Aggregates;
-using Domain.ValueObjects.Identity;
+using Domain.UserManagement.ValueObjects;
 
 namespace Application.Features.Stories.Commands.CreateStory;
 

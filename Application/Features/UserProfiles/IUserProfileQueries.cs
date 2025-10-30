@@ -4,5 +4,5 @@ namespace Application.Features.UserProfiles;
 
 public interface IUserProfileQueries
 {
-    Task<UserProfileDto?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken);
+    Task<UserProfileDto?> GetByIdAsync(Guid userId, CancellationToken cancellationToken);
 }

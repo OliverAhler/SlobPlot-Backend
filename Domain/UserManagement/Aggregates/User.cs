@@ -1,5 +1,6 @@
 using Domain.Common;
-using Domain.ValueObjects.Identity;
+using Domain.UserManagement.Entities;
+using Domain.UserManagement.ValueObjects;
 
 namespace Domain.UserManagement.Aggregates;
 
@@ -10,21 +11,11 @@ public class User : AggregateRoot<UserId>
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     
+    
+    private UserProfile _profile = null!;
+    public UserProfile Profile => _profile;
+    
     private User() { }
-
-    #region Database Reconstitute
-    public static User Reconstitute(Guid id, Guid subUid, string userName, DateTime createdAt, DateTime updatedAt)
-    {
-        return new User
-        {
-            Id = UserId.From(id),
-            SubUid = subUid,
-            UserName = userName,
-            CreatedAt = createdAt,
-            UpdatedAt = updatedAt
-        };
-    }
-    #endregion
 
     #region User Methods
     // Minimal validation - just sanity checks - Source of truth is Authentik IdP (For user info)
@@ -36,14 +27,19 @@ public class User : AggregateRoot<UserId>
         if (string.IsNullOrWhiteSpace(userName))
             return Result<User>.Failure("Username is required");
         
-        return Result<User>.Success(new User
+        var userId = UserId.From(Guid.NewGuid());
+        
+        var user = new User
         {
-            Id = UserId.From(Guid.NewGuid()),
+            Id = userId,
             SubUid = subUid,
             UserName = userName,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        });
+            UpdatedAt = DateTime.UtcNow,
+            _profile = UserProfile.CreateFor(userId, userName)
+        };
+
+        return Result<User>.Success(user);
     }
     
     // Simple update - Authentik already validated the new username

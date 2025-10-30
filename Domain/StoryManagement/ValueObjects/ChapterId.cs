@@ -1,4 +1,4 @@
-namespace Domain.ValueObjects.Story;
+namespace Domain.StoryManagement.ValueObjects;
 
 public record ChapterId(Guid Value)
 {

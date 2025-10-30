@@ -1,8 +1,5 @@
 using Application.Features.Stories;
 using Application.Features.Stories.DTOs;
-using Domain.ValueObjects.Identity;
-using Domain.ValueObjects.Story;
-using Infrastructure.Mappers.Stories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Queries.Stories;
@@ -13,12 +10,16 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
     {
         return await context.Stories
             .AsNoTracking()
-            .Where(s => !s.IsDeleted && !s.IsPrivate)
-            .Select(s => new StoryListItemDto(
-                s.Id, 
-                s.Title, 
-                s.UserProfile.DisplayName
-            ))
+            .Where(s => !s.IsPrivate)
+            .Join(
+                context.UserProfiles,
+                story => story.AuthorId,
+                profile => profile.Id,
+                (story, profile) => new StoryListItemDto(
+                    story.Id.Value,
+                    story.Title,
+                    profile.DisplayName
+                ))
             .ToListAsync(ct);
     }
     
@@ -26,17 +27,20 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
     {
         return await context.Stories
             .AsNoTracking()
-            .Where(s => s.Id == id && !s.IsDeleted)
-            .Select(s => new StoryDetailDto(
-                s.Id,
-                s.UserId,
-                s.UserProfile.DisplayName,
-                s.Title,
-                s.Subtitle,
-                s.Summary,
-                s.CreatedAt,
-                s.UpdatedAt
-            ))
+            .Where(s => s.Id.Value == id)
+            .Join(
+                context.UserProfiles,
+                story => story.AuthorId,
+                profile => profile.Id,
+                (story, profile) => new StoryDetailDto(
+                    story.Id.Value,
+                    story.AuthorId.Value,
+                    profile.DisplayName,
+                    story.Title,
+                    story.SubTitle,
+                    story.Summary,
+                    story.CreatedAt,
+                    story.UpdatedAt))
             .FirstOrDefaultAsync(ct);
     }
     
@@ -44,8 +48,16 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
     {
         return await context.Stories
             .AsNoTracking()
-            .Where(s => s.UserId == userId && !s.IsDeleted)
-            .Select(s => new StoryListItemDto(s.Id, s.Title, s.UserProfile.DisplayName))
+            .Where(s => s.AuthorId.Value == userId)
+            .Join(
+                context.UserProfiles,
+                story => story.AuthorId,
+                profile => profile.Id,
+                (story, profile) => new StoryListItemDto(
+                    story.Id.Value,
+                    story.Title,
+                    profile.DisplayName
+                ))
             .ToListAsync(ct);
     }
     
@@ -53,8 +65,16 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
     {
         return await context.Stories
             .AsNoTracking()
-            .Where(s => s.UserId == userId && !s.IsDeleted && !s.IsPrivate)
-            .Select(s => new StoryListItemDto(s.Id, s.Title, s.UserProfile.DisplayName))
+            .Where(s => s.AuthorId.Value == userId && !s.IsPrivate)
+            .Join(
+                context.UserProfiles,
+                story => story.AuthorId,
+                profile => profile.Id,
+                (story, profile) => new StoryListItemDto(
+                    story.Id.Value,
+                    story.Title,
+                    profile.DisplayName
+                ))
             .ToListAsync(ct);
     }
     
@@ -64,8 +84,16 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
         
         return await context.Stories
             .AsNoTracking()
-            .Where(s => s.Title.ToLower().Contains(lowerSearchTerm) && !s.IsDeleted)
-            .Select(s => new StoryListItemDto(s.Id, s.Title, s.UserProfile.DisplayName))
+            .Where(s => s.Title.ToLower().Contains(lowerSearchTerm))
+            .Join(
+                context.UserProfiles,
+                story => story.AuthorId,
+                profile => profile.Id,
+                (story, profile) => new StoryListItemDto(
+                    story.Id.Value,
+                    story.Title,
+                    profile.DisplayName
+                ))
             .ToListAsync(ct);
     }
 }
