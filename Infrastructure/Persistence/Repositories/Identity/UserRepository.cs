@@ -1,5 +1,5 @@
 using Application.Features.Auth;
-using Domain.Aggregates.Users;
+using Domain.UserManagement.Aggregates;
 using Infrastructure.Mappers.Identity;
 using Microsoft.EntityFrameworkCore;
 

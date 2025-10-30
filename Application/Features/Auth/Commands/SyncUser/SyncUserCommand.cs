@@ -1,8 +1,9 @@
 using Application.Common.Interfaces;
 using Application.Features.UserProfiles;
 using Application.IRepositories;
-using Domain.Aggregates.Users;
 using Domain.Common;
+using Domain.UserManagement.Aggregates;
+using Domain.UserManagement.Entities;
 
 namespace Application.Features.Auth.Commands.SyncUser;
 

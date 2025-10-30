@@ -1,4 +1,4 @@
-using Domain.Aggregates.Users;
+using Domain.UserManagement.Entities;
 using Infrastructure.Persistence.Entities.Identity;
 
 namespace Infrastructure.Mappers.Identity;

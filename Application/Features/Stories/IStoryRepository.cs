@@ -1,4 +1,4 @@
-using Domain.Aggregates.Stories;
+using Domain.StoryManagement.Aggregates;
 
 namespace Application.Features.Stories;
 

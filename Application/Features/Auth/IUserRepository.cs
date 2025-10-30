@@ -1,4 +1,4 @@
-using Domain.Aggregates.Users;
+using Domain.UserManagement.Aggregates;
 
 namespace Application.Features.Auth;
 

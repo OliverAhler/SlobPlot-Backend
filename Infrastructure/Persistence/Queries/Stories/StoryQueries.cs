@@ -1,6 +1,5 @@
 using Application.Features.Stories;
 using Application.Features.Stories.DTOs;
-using Domain.Aggregates.Stories;
 using Domain.ValueObjects.Identity;
 using Domain.ValueObjects.Story;
 using Infrastructure.Mappers.Stories;

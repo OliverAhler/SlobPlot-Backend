@@ -1,9 +1,9 @@
 using Domain.Common;
 using Domain.ValueObjects.Identity;
 
-namespace Domain.Aggregates.Users;
+namespace Domain.UserManagement.Entities;
 
-public class UserProfile : AggregateRoot
+public class UserProfile : Entity<UserId>
 {
     public UserId UserId { get; private set; } = null!;
     public string DisplayName { get; private set; } = null!;

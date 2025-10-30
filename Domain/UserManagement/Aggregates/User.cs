@@ -1,12 +1,10 @@
 using Domain.Common;
-using Domain.ValueObjects;
 using Domain.ValueObjects.Identity;
 
-namespace Domain.Aggregates.Users;
+namespace Domain.UserManagement.Aggregates;
 
-public class User : AggregateRoot
+public class User : AggregateRoot<UserId>
 {
-    public UserId Id { get; private set; } = null!;
     public Guid SubUid { get; private set; }
     public string UserName { get; private set; } = null!;
     public DateTime CreatedAt { get; private set; }

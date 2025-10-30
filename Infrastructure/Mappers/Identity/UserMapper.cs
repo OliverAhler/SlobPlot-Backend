@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using Domain.Aggregates.Users;
+using Domain.UserManagement.Aggregates;
 using Infrastructure.Persistence.Entities.Identity;
 
 namespace Infrastructure.Mappers.Identity;

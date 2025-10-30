@@ -1,6 +1,6 @@
-namespace Domain.Constants;
+namespace Domain.StoryManagement.ValueObjects;
 
-public static class StoryStatusIds
+public static class StoryStatus
 {
     public const int Ongoing = 1;
     public const int Complete = 2;

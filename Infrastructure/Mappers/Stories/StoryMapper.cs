@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using Domain.Aggregates.Stories;
+using Domain.StoryManagement.Aggregates;
 using Infrastructure.Persistence.Entities.Stories;
 
 namespace Infrastructure.Mappers.Stories;
@@ -47,7 +47,7 @@ public static class StoryMapper
         return new DbStory()
         {
             Id = story.Id.Value,
-            UserId = story.UserId.Value,
+            UserId = story.AuthorId.Value,
             Title = story.Title,
             Subtitle = story.SubTitle,
             Summary = story.Summary,
@@ -55,7 +55,7 @@ public static class StoryMapper
             IsPrivate = story.IsPrivate,
             CreatedAt = story.CreatedAt,
             UpdatedAt = story.UpdatedAt,
-            StoryGenres = story.StoryGenres.Select(genreId => new DbStoryGenre
+            StoryGenres = story.GenreIds.Select(genreId => new DbStoryGenre
             {
                 StoryId = story.Id.Value,
                 GenreId = genreId

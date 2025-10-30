@@ -1,6 +1,6 @@
 using Application.Features.UserProfiles;
 using Application.IRepositories;
-using Domain.Aggregates.Users;
+using Domain.UserManagement.Entities;
 using Domain.ValueObjects.Identity;
 using Infrastructure.Mappers.Identity;
 using Microsoft.EntityFrameworkCore;
