@@ -35,6 +35,7 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
                 s.Subtitle,
                 s.Summary,
                 s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
+                s.IsPrivate,
                 s.CreatedAt,
                 s.UpdatedAt
             ))

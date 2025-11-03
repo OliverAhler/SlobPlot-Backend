@@ -12,7 +12,6 @@ using Infrastructure.Stories.Queries;
 using Infrastructure.Stories.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using SharedConfig;
 
 namespace Infrastructure;

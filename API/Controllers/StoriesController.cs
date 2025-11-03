@@ -26,8 +26,21 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     }
     
     [HttpGet]
-    [Route("{storyId}")]
+    [Route("{storyId:guid}")]
     public async Task<IActionResult> GetStoryById([FromRoute] Guid storyId, CancellationToken cancellationToken)
+    {
+        var query = new GetStoryByIdQuery(storyId);
+
+        var result = await dispatcher.Dispatch(query, cancellationToken);
+        
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : NotFound(result.Error);
+    }
+    
+    [HttpPut]
+    [Route("{storyId:guid}")]
+    public async Task<IActionResult> UpdateStory([FromRoute] Guid storyId, CancellationToken cancellationToken)
     {
         var query = new GetStoryByIdQuery(storyId);
 
