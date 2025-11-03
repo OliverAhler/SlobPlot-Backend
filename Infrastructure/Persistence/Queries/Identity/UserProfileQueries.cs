@@ -6,16 +6,17 @@ namespace Infrastructure.Persistence.Queries.Identity;
 
 public class UserProfileQueries(ApplicationDbContext context) : IUserProfileQueries
 {
-    public async Task<UserProfileDto?> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<UserProfileDto?> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
     {
         return await context.UserProfiles
             .AsNoTracking()
-            .Where(u => u.Id.Value == userId)
+            .Where(u => u.UserId == userId)
             .Select(u => new UserProfileDto(
-                u.Id.Value,
+                u.UserId,
                 u.DisplayName,
                 u.Bio,
-                u.UpdatedAt))
+                u.UpdatedAt)
+            )
             .FirstOrDefaultAsync(cancellationToken);
     }
 }

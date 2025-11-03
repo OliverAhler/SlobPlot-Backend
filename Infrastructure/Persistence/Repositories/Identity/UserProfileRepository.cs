@@ -1,6 +1,7 @@
 using Application.Features.UserProfiles;
 using Domain.UserManagement.Entities;
 using Domain.UserManagement.ValueObjects;
+using Infrastructure.Persistence.Mappers.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories.Identity;
@@ -11,18 +12,20 @@ public class UserProfileRepository(ApplicationDbContext context) : IUserProfileR
     {
         var profile = await context.UserProfiles
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id.Value == userId.Value, cancellationToken);
+            .FirstOrDefaultAsync(u => u.UserId == userId.Value, cancellationToken);
 
-        return profile;
+        return profile?.ToDomain();
     }
 
     public void AddUserProfile(UserProfile profile)
     {
-        context.UserProfiles.Add(profile);
+        var dbProfile = profile.ToDb();
+        context.UserProfiles.Add(dbProfile);
     }
 
     public void UpdateUserProfile(UserProfile profile)
     {
-        context.UserProfiles.Update(profile);
+        var dbProfile = profile.ToDb();
+        context.UserProfiles.Update(dbProfile);
     }
 }

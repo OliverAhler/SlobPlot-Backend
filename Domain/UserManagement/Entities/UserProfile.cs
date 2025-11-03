@@ -11,6 +11,19 @@ public class UserProfile : Entity<UserId>
     
     private UserProfile() { }
     
+    #region Database Reconstitute
+    public static UserProfile Reconstitute(Guid userId, string displayName, string? bio, DateTime updatedAt)
+    {
+        return new UserProfile
+        {
+            Id = UserId.From(userId),
+            DisplayName = displayName,
+            Bio = bio,
+            UpdatedAt = updatedAt
+        };
+    }
+    #endregion
+    
     internal static UserProfile CreateFor(UserId userId, string displayName)
     {
         // No validation needed - User aggregate already validated!

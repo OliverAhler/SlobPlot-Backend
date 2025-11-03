@@ -19,14 +19,32 @@ public class Story : AggregateRoot<StoryId>
     public DateTime UpdatedAt { get; private set; }
     
     // Chapters collection
-    private readonly List<StoryChapter> _chapters = new();
+    private readonly List<StoryChapter> _chapters = [];
     public IReadOnlyCollection<StoryChapter> Chapters => _chapters.AsReadOnly();
     
     // Genres collection
-    internal readonly List<int> _genreIds = new();
+    internal readonly List<int> _genreIds = [];
     public IReadOnlyCollection<int> GenreIds => _genreIds.AsReadOnly();
     
     private Story() {}
+    
+    #region Database Reconstitute
+    internal static Story Reconstitute(Guid id, Guid userId, string title, string? subTitle, string? summary, bool isPrivate, int statusId, DateTime createdAt, DateTime updatedAt)
+    {
+        return new Story
+        {
+            Id = StoryId.From(id),
+            AuthorId = UserId.From(userId),
+            Title = title,
+            SubTitle = subTitle,
+            Summary = summary,
+            IsPrivate = isPrivate,
+            StoryStatusId = statusId,
+            CreatedAt = createdAt,
+            UpdatedAt = updatedAt
+        };
+    }
+    #endregion
     
     
     public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPrivate, int[] genreIds)
@@ -135,7 +153,7 @@ public class Story : AggregateRoot<StoryId>
         return Result.Success();
     }
     
-    private bool CanTransitionTo(int newStatusId)
+    private static bool CanTransitionTo(int newStatusId)
     {
         // Add  business rules for status transitions
         // Example: Can't go from Completed back to Planned
@@ -145,7 +163,86 @@ public class Story : AggregateRoot<StoryId>
 
     #region Chapter Management
 
+    public Result<StoryChapter> AddChapter(string title, string body)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+            return Result<StoryChapter>.Failure("Title is required");
     
+        if (string.IsNullOrWhiteSpace(body))
+            return Result<StoryChapter>.Failure("Chapter body is required");
+        
+        var chapterNumber = _chapters.Count + 1;
+        var chapter = StoryChapter.Create(Id, chapterNumber, title, body);
+    
+        _chapters.Add(chapter);
+        UpdatedAt = DateTime.UtcNow;
+    
+        return Result<StoryChapter>.Success(chapter);
+    }
+    
+    public Result UpdateChapter(ChapterId id, string title, string body)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+            return Result.Failure("Title is required");
+    
+        if (string.IsNullOrWhiteSpace(body))
+            return Result.Failure("Chapter body is required");
 
+        var chapter = _chapters.FirstOrDefault(c => c.Id == id);
+    
+        if (chapter is null)
+            return Result.Failure($"Chapter with id {id.Value} not found");
+    
+        chapter.Update(title, body);
+        UpdatedAt = DateTime.UtcNow;
+
+        return Result.Success();
+    }
+
+    public Result RemoveChapter(ChapterId id)
+    {
+        var chapter = _chapters.FirstOrDefault(ch => ch.Id == id);
+    
+        if (chapter is null)
+            return Result.Failure($"Chapter with id {id.Value} not found");
+        
+        _chapters.Remove(chapter);
+
+        ReorderChapters();
+        
+        UpdatedAt = DateTime.UtcNow;
+        
+        return Result.Success();
+    }
+
+    public Result ReorderChapter(ChapterId id, int newPosition)
+    {
+        var size = _chapters.Count;
+    
+        if (newPosition < 1 || newPosition > size)
+            return Result.Failure($"Position must be between 1 and {size}");
+    
+        var chapter = _chapters.FirstOrDefault(ch => ch.Id == id);
+    
+        if (chapter is null)
+            return Result.Failure($"Chapter with id {id.Value} not found");
+    
+        _chapters.Remove(chapter);
+        _chapters.Insert(newPosition - 1, chapter);
+
+        ReorderChapters();
+    
+        UpdatedAt = DateTime.UtcNow;
+    
+        return Result.Success();
+    }
     #endregion
+    
+    private void ReorderChapters()
+    {
+        for (var i = 0; i < _chapters.Count; i++)
+        {
+            _chapters[i].UpdateChapterNumber(i + 1);
+        }
+    }
 }

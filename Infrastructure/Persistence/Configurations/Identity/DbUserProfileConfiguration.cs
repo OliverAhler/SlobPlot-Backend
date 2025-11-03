@@ -1,39 +1,21 @@
-using Domain.UserManagement.Entities;
-using Domain.UserManagement.ValueObjects;
+using Infrastructure.Persistence.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations.Identity;
 
-public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
+public class DbUserProfileConfiguration : IEntityTypeConfiguration<DbUserProfile>
 {
-    public void Configure(EntityTypeBuilder<UserProfile> builder)
+    public void Configure(EntityTypeBuilder<DbUserProfile> builder)
     {
-        // Table mapping
-        builder.ToTable("user_profiles", "auth");
-        
-        // Primary key (shared with User - maps to user_id column)
-        builder.HasKey(p => p.Id);
-        
-        // Map UserId value object to user_id column
-        builder.Property(p => p.Id)
-            .HasColumnName("user_id")
-            .HasConversion(
-                id => id.Value,                    // UserId → Guid
-                value => UserId.From(value)        // Guid → UserId
-            );
-        
-        builder.Property(p => p.DisplayName)
-            .HasColumnName("display_name")
-            .HasMaxLength(100)
-            .IsRequired();
-        
-        builder.Property(p => p.Bio)
-            .HasColumnName("bio")
-            .HasMaxLength(5000);
-        
-        builder.Property(p => p.UpdatedAt)
-            .HasColumnName("updated_at")
-            .IsRequired();
+        builder.HasOne(p => p.User)
+            .WithOne(u => u.Profile)
+            .HasForeignKey<DbUserProfile>(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(u => u.Stories)
+            .WithOne(s => s.UserProfile)
+            .HasForeignKey(s => s.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

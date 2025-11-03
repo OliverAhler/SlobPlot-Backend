@@ -10,8 +10,8 @@ public class UserQueries(ApplicationDbContext context) : IUserQueries
     {
         return await context.Users
             .AsNoTracking()
-            .Where(u => u.SubUid == sub)
-            .Select(u => u.Id.Value)
+            .Where(u => u.SubUid == sub && !u.IsDeleted)
+            .Select(u => u.Id)
             .FirstOrDefaultAsync(cancellationToken);
     }
 
@@ -19,9 +19,9 @@ public class UserQueries(ApplicationDbContext context) : IUserQueries
     {
         return await context.Users
             .AsNoTracking()
-            .Where(u => u.Id.Value == id)
+            .Where(u => u.Id == id && !u.IsDeleted)
             .Select(u => new AuthenticatedUserDto(
-                u.Id.Value,
+                u.Id,
                 u.SubUid,
                 u.UserName,
                 u.CreatedAt
@@ -33,9 +33,9 @@ public class UserQueries(ApplicationDbContext context) : IUserQueries
     {
         return await context.Users
             .AsNoTracking()
-            .Where(u => u.SubUid == subUid)
+            .Where(u => u.SubUid == subUid && !u.IsDeleted)
             .Select(u => new AuthenticatedUserDto(
-                u.Id.Value,
+                u.Id,
                 u.SubUid,
                 u.UserName,
                 u.CreatedAt

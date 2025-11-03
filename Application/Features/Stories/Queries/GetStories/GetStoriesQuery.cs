@@ -1,6 +1,5 @@
 using Application.Common.Interfaces;
 using Application.Features.Stories.DTOs;
-using Application.IRepositories;
 using Domain.Common;
 
 namespace Application.Features.Stories.Queries.GetStories;

@@ -1,4 +1,4 @@
-using Infrastructure.Persistence.Entities;
+using Infrastructure.Persistence.Entities.Stories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,10 +10,14 @@ public class DbStoryGenreConfiguration : IEntityTypeConfiguration<DbStoryGenre>
     {
         builder.HasKey(sg => new { sg.StoryId, sg.GenreId });
         
+        builder.HasOne(sg => sg.Story)
+            .WithMany(s => s.StoryGenres)
+            .HasForeignKey(sg => sg.StoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+            
         builder.HasOne(sg => sg.Genre)
-            .WithMany()
+            .WithMany(g => g.StoryGenres)
             .HasForeignKey(sg => sg.GenreId)
             .OnDelete(DeleteBehavior.Restrict);
     }
-
 }

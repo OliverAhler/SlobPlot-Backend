@@ -10,7 +10,7 @@ public class StatusQueries(ApplicationDbContext context)  : IStatusQueries
     {
         return await context.Status
             .AsNoTracking()
-            .Select(s => new StatusDto(s.Id, s.DisplayName, s.StatusDescription))
+            .Select(s => new StatusDto(s.Id, s.DisplayName, s.Description))
             .ToListAsync(cancellationToken);
     }
 }

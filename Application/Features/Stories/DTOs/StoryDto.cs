@@ -7,6 +7,7 @@ public record StoryDetailDto(
     string Title,
     string? SubTitle,
     string? Summary,
+    List<string> Genres,
     DateTime CreatedAt,
     DateTime UpdatedAt
 );

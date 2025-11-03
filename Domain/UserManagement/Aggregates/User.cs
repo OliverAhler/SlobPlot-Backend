@@ -16,6 +16,20 @@ public class User : AggregateRoot<UserId>
     public UserProfile Profile => _profile;
     
     private User() { }
+    
+    #region Database Reconstitute
+    public static User Reconstitute(Guid id, Guid subUid, string userName, DateTime createdAt, DateTime updatedAt)
+    {
+        return new User
+        {
+            Id = UserId.From(id),
+            SubUid = subUid,
+            UserName = userName,
+            CreatedAt = createdAt,
+            UpdatedAt = updatedAt
+        };
+    }
+    #endregion
 
     #region User Methods
     // Minimal validation - just sanity checks - Source of truth is Authentik IdP (For user info)

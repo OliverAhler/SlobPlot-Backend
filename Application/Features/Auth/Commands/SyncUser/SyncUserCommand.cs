@@ -34,7 +34,7 @@ public class SyncUserCommandHandler(IUserRepository userRepository, IUnitOfWork 
             return Result<bool>.Failure(userResult.Error);
         
         userRepository.AddUser(userResult.Value);
-        // userProfileRepository.AddUserProfile(profileResult.Value);
+        
         await unitOfWork.SaveChangesAsync(cancellationToken);
     
         return Result<bool>.Success(true); // New user created
