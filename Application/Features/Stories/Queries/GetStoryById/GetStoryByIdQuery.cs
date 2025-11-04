@@ -1,4 +1,6 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Handlers;
+using Application.Common.Interfaces.Handlers.Messaging;
 using Application.Features.Stories.DTOs;
 using Domain.Common;
 
@@ -18,7 +20,6 @@ public class GetStoryByIdHandler(IStoryQueries storyQueries, ICurrentUserService
         
         if(story.IsPrivate && story.UserId != currentUserId)
             return Result<StoryDetailDto>.Failure($"Story with id {query.Id} is private");
-        
         
         return Result<StoryDetailDto>.Success(story);
     }

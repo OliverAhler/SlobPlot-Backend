@@ -1,6 +1,4 @@
-using Application.Common.Interfaces.Handlers;
-
-namespace Application.Common.Interfaces;
+namespace Application.Common.Interfaces.Handlers;
 
 public interface ICommandHandler<in TCommand, TResult> : IHandler
 {

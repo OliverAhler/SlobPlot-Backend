@@ -1,7 +1,9 @@
 using API.Contracts.Stories.CreateStory;
+using API.Contracts.Stories.UpdateStory;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Handlers;
 using Application.Features.Stories.Commands.CreateStory;
+using Application.Features.Stories.Commands.UpdateStory;
 using Application.Features.Stories.Queries.GetStories;
 using Application.Features.Stories.Queries.GetStoryById;
 using Microsoft.AspNetCore.Authorization;
@@ -40,14 +42,15 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     
     [HttpPut]
     [Route("{storyId:guid}")]
-    public async Task<IActionResult> UpdateStory([FromRoute] Guid storyId, CancellationToken cancellationToken)
+    [Authorize]
+    public async Task<IActionResult> UpdateStoryPrivacy([FromRoute] Guid storyId, [FromBody] UpdateStoryPrivacyRequest request, CancellationToken cancellationToken)
     {
-        var query = new GetStoryByIdQuery(storyId);
+        var command = new UpdateStoryPrivacyCommand(storyId, request.IsPrivate);
 
-        var result = await dispatcher.Dispatch(query, cancellationToken);
+        var result = await dispatcher.Dispatch(command, cancellationToken);
         
         return result.IsSuccess 
-            ? Ok(result.Value) 
+            ? Ok(result) 
             : NotFound(result.Error);
     }
     

@@ -135,7 +135,7 @@ public class Story : AggregateRoot<StoryId>
         return Result.Success();
     }
 
-    public void ToggleIsPrivate(bool isPrivate)
+    public void UpdatePrivacy(bool isPrivate)
     {
         IsPrivate = isPrivate;
         UpdatedAt = DateTime.UtcNow;
