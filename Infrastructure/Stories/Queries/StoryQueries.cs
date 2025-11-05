@@ -17,7 +17,10 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
             .Select(s => new StoryListItemDto(
                 s.Id, 
                 s.Title, 
-                s.UserProfile.DisplayName
+                s.UserProfile.DisplayName,
+                s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
+                s.UpdatedAt,
+                s.CreatedAt
             ))
             .ToListAsync(ct);
     }
@@ -42,12 +45,37 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
             .FirstOrDefaultAsync(ct);
     }
     
+    public async Task<IReadOnlyCollection<StoryListDetailedDto>> GetExpandedStoriesByUserIdAsync(Guid userId, CancellationToken ct = default)
+    {
+        return await context.Stories
+            .AsNoTracking()
+            .Where(s => s.UserId == userId && !s.IsDeleted)
+            .Select(s => new StoryListDetailedDto(
+                s.Id, 
+                s.Title, 
+                s.UserProfile.DisplayName,
+                s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
+                s.IsPrivate,
+                "Complete",
+                s.UpdatedAt,
+                s.CreatedAt
+            ))
+            .ToListAsync(ct);
+    }
+    
     public async Task<IReadOnlyCollection<StoryListItemDto>> GetStoriesByUserIdAsync(Guid userId, CancellationToken ct = default)
     {
         return await context.Stories
             .AsNoTracking()
             .Where(s => s.UserId == userId && !s.IsDeleted)
-            .Select(s => new StoryListItemDto(s.Id, s.Title, s.UserProfile.DisplayName))
+            .Select(s => new StoryListItemDto(
+                s.Id, 
+                s.Title, 
+                s.UserProfile.DisplayName,
+                s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
+                s.UpdatedAt,
+                s.CreatedAt
+            ))
             .ToListAsync(ct);
     }
     
@@ -56,7 +84,14 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
         return await context.Stories
             .AsNoTracking()
             .Where(s => s.UserId == userId && !s.IsDeleted && !s.IsPrivate)
-            .Select(s => new StoryListItemDto(s.Id, s.Title, s.UserProfile.DisplayName))
+            .Select(s => new StoryListItemDto(
+                s.Id, 
+                s.Title, 
+                s.UserProfile.DisplayName,
+                s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
+                s.UpdatedAt,
+                s.CreatedAt
+            ))
             .ToListAsync(ct);
     }
     
@@ -67,7 +102,14 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
         return await context.Stories
             .AsNoTracking()
             .Where(s => s.Title.ToLower().Contains(lowerSearchTerm) && !s.IsDeleted)
-            .Select(s => new StoryListItemDto(s.Id, s.Title, s.UserProfile.DisplayName))
+            .Select(s => new StoryListItemDto(
+                s.Id, 
+                s.Title, 
+                s.UserProfile.DisplayName,
+                s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
+                s.UpdatedAt,
+                s.CreatedAt
+            ))
             .ToListAsync(ct);
     }
 }
