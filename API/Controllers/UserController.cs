@@ -5,6 +5,7 @@ using Application.Common.Interfaces;
 using Application.Common.Interfaces.Handlers;
 using Application.Features.Auth.Commands.SyncUser;
 using Application.Features.Auth.Queries.GetUserBySub;
+using Application.Features.Stories.Queries.GetStoriesByAuthor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,5 +41,18 @@ public class UserController(IDispatcher dispatcher, ICurrentUserService currentU
         return result.IsSuccess 
             ? Ok(new SyncUserResponse(result.Value))
             : BadRequest(result.Error); 
+    }
+    
+    [HttpGet]
+    [Route("{userid:guid}/stories")]
+    public async Task<IActionResult> GetUserStories([FromRoute] Guid userid, CancellationToken cancellationToken)
+    {
+        var query = new GetStoriesByAuthorQuery(userid);
+        
+        var result = await dispatcher.Dispatch(query, cancellationToken);
+        
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : NotFound(result.Error);
     }
 }

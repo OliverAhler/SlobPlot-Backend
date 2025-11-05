@@ -1,5 +1,6 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Handlers;
+using Application.Common.Interfaces.Handlers.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Common;

@@ -1,4 +1,6 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Handlers;
+using Application.Common.Interfaces.Handlers.Messaging;
 using Domain.Common;
 
 namespace Application.Features.Auth.Queries.GetUserIdBySubId;

@@ -1,4 +1,6 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Handlers;
+using Application.Common.Interfaces.Handlers.Messaging;
 using Application.Features.Genres.DTOs;
 using Domain.Common;
 using Microsoft.Extensions.Caching.Memory;

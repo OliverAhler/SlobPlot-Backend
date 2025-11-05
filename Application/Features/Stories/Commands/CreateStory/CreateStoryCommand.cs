@@ -1,8 +1,9 @@
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Handlers;
+using Application.Common.Interfaces.Handlers.Messaging;
 using Application.IRepositories;
-using Domain.Aggregates.Stories;
 using Domain.Common;
-using Domain.ValueObjects.Identity;
+using Domain.StoryManagement.Aggregates;
+using Domain.UserManagement.ValueObjects;
 
 namespace Application.Features.Stories.Commands.CreateStory;
 

@@ -1,4 +1,6 @@
 
+using Application.Common.Interfaces.Handlers.Messaging;
+
 namespace Application.Common.Interfaces.Handlers;
 
 public interface IDispatcher

@@ -1,4 +1,4 @@
-using Domain.Aggregates.Users;
+using Domain.UserManagement.Entities;
 
 namespace Application.Features.UserProfiles;
 

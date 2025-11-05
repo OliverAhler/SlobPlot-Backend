@@ -7,6 +7,8 @@ public record StoryDetailDto(
     string Title,
     string? SubTitle,
     string? Summary,
+    List<string> Genres,
+    bool IsPrivate,
     DateTime CreatedAt,
     DateTime UpdatedAt
 );

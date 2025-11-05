@@ -6,4 +6,15 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+		<Folder Include="StoryManagement\Events\" />
+		<Folder Include="StoryManagement\Exceptions\" />
+		<Folder Include="UserManagement\Events\" />
+		<Folder Include="UserManagement\Exceptions\" />
+    </ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Infrastructure" />
+	</ItemGroup>
+
 </Project>

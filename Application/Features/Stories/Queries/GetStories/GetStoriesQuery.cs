@@ -1,6 +1,7 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Handlers;
+using Application.Common.Interfaces.Handlers.Messaging;
 using Application.Features.Stories.DTOs;
-using Application.IRepositories;
 using Domain.Common;
 
 namespace Application.Features.Stories.Queries.GetStories;
