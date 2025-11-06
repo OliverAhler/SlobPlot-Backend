@@ -45,7 +45,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     [Authorize]
     public async Task<IActionResult> UpdateStoryPrivacy([FromRoute] Guid storyId, [FromBody] UpdateStoryPrivacyRequest request, CancellationToken cancellationToken)
     {
-        var command = new UpdateStoryPrivacyCommand(storyId, request.IsPrivate);
+        var command = new UpdateStoryPrivacyCommand(storyId, request.IsPublic);
 
         var result = await dispatcher.Dispatch(command, cancellationToken);
         

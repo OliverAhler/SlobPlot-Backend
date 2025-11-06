@@ -5,7 +5,7 @@ public record StoryListDetailedDto(
     string Title,
     string Author,
     List<string> Genres,
-    bool IsPrivate,
+    bool IsPublic,
     string Status,
     DateTime UpdatedAt,
     DateTime CreatedAt

@@ -13,7 +13,7 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
     {
         return await context.Stories
             .AsNoTracking()
-            .Where(s => !s.IsDeleted && !s.IsPrivate)
+            .Where(s => !s.IsDeleted && s.IsPublic)
             .Select(s => new StoryListItemDto(
                 s.Id, 
                 s.Title, 
@@ -38,7 +38,7 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
                 s.Subtitle,
                 s.Summary,
                 s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
-                s.IsPrivate,
+                s.IsPublic,
                 s.CreatedAt,
                 s.UpdatedAt
             ))
@@ -55,7 +55,7 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
                 s.Title, 
                 s.UserProfile.DisplayName,
                 s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
-                s.IsPrivate,
+                s.IsPublic,
                 "Complete",
                 s.UpdatedAt,
                 s.CreatedAt
@@ -83,7 +83,7 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
     {
         return await context.Stories
             .AsNoTracking()
-            .Where(s => s.UserId == userId && !s.IsDeleted && !s.IsPrivate)
+            .Where(s => s.UserId == userId && !s.IsDeleted && s.IsPublic)
             .Select(s => new StoryListItemDto(
                 s.Id, 
                 s.Title, 

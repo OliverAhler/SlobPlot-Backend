@@ -1,3 +1,3 @@
 namespace API.Contracts.Stories.UpdateStory;
 
-public record UpdateStoryPrivacyRequest(bool IsPrivate);
+public record UpdateStoryPrivacyRequest(bool IsPublic);

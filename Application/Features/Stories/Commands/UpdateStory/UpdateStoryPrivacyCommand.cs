@@ -6,7 +6,7 @@ using Domain.StoryManagement.ValueObjects;
 
 namespace Application.Features.Stories.Commands.UpdateStory;
 
-public record UpdateStoryPrivacyCommand(Guid StoryId, bool IsPrivate) : ICommand<Result>;
+public record UpdateStoryPrivacyCommand(Guid StoryId, bool IsPublic) : ICommand<Result>;
 
 public class UpdateStoryPrivacyHandler(IStoryRepository storyRepository, IUnitOfWork unitOfWork) : ICommandHandler<UpdateStoryPrivacyCommand, Result>
 {
@@ -18,7 +18,7 @@ public class UpdateStoryPrivacyHandler(IStoryRepository storyRepository, IUnitOf
         if (story is null)
             return Result.Failure("Story not found");
         
-        story.UpdatePrivacy(command.IsPrivate);
+        story.UpdatePrivacy(command.IsPublic);
         storyRepository.UpdateStory(story);
         
         await unitOfWork.SaveChangesAsync(cancellationToken);

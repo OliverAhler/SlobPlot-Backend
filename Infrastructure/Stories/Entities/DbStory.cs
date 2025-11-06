@@ -30,8 +30,8 @@ public class DbStory
     [MaxLength(1500)]
     public string? Summary { get; set; }
     
-    [Column("is_private")]
-    public bool IsPrivate { get; set; }
+    [Column("is_public")]
+    public bool IsPublic { get; set; }
     
     [Column("created_at")]
     public DateTime CreatedAt { get; set; }

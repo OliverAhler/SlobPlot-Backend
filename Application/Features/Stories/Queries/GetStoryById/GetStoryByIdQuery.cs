@@ -18,7 +18,7 @@ public class GetStoryByIdHandler(IStoryQueries storyQueries, ICurrentUserService
         if (story is null)
             return Result<StoryDetailDto>.Failure($"Story with id {query.Id} not found");
         
-        if(story.IsPrivate && story.UserId != currentUserId)
+        if(story.IsPublic && story.UserId != currentUserId)
             return Result<StoryDetailDto>.Failure($"Story with id {query.Id} is private");
         
         return Result<StoryDetailDto>.Success(story);

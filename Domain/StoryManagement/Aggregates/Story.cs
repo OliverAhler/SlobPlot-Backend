@@ -12,7 +12,7 @@ public class Story : AggregateRoot<StoryId>
     public string Title { get; private set; } = null!;
     public string? SubTitle { get; private set; }
     public string? Summary { get; private set; }
-    public bool IsPrivate { get; private set; }
+    public bool IsPublic { get; private set; }
     
     public int StoryStatusId { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -29,7 +29,7 @@ public class Story : AggregateRoot<StoryId>
     private Story() {}
     
     #region Database Reconstitute
-    internal static Story Reconstitute(Guid id, Guid userId, string title, string? subTitle, string? summary, bool isPrivate, int statusId, DateTime createdAt, DateTime updatedAt)
+    internal static Story Reconstitute(Guid id, Guid userId, string title, string? subTitle, string? summary, bool isPublic, int statusId, DateTime createdAt, DateTime updatedAt)
     {
         return new Story
         {
@@ -38,7 +38,7 @@ public class Story : AggregateRoot<StoryId>
             Title = title,
             SubTitle = subTitle,
             Summary = summary,
-            IsPrivate = isPrivate,
+            IsPublic = isPublic,
             StoryStatusId = statusId,
             CreatedAt = createdAt,
             UpdatedAt = updatedAt
@@ -47,7 +47,7 @@ public class Story : AggregateRoot<StoryId>
     #endregion
     
     
-    public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPrivate, int[] genreIds)
+    public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPublic, int[] genreIds)
     {
         if(userId.Value == Guid.Empty)
             return Result<Story>.Failure("Invalid userId");
@@ -74,7 +74,7 @@ public class Story : AggregateRoot<StoryId>
             SubTitle = subTitle,
             Summary = summary,
             StoryStatusId = StoryStatus.Planned,
-            IsPrivate = isPrivate,
+            IsPublic = isPublic,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -135,9 +135,9 @@ public class Story : AggregateRoot<StoryId>
         return Result.Success();
     }
 
-    public void UpdatePrivacy(bool isPrivate)
+    public void UpdatePrivacy(bool isPublic)
     {
-        IsPrivate = isPrivate;
+        IsPublic = isPublic;
         UpdatedAt = DateTime.UtcNow;
     }
     
