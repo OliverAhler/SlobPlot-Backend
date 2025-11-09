@@ -1,3 +1,4 @@
+using Application.Common.Interfaces;
 using Application.Features.Auth;
 using Application.Features.Genres;
 using Application.Features.Statuses;
@@ -8,6 +9,7 @@ using Infrastructure.Persistence;
 using Infrastructure.Identity.Queries;
 using Infrastructure.Identity.Repositories;
 using Infrastructure.Master.Queries;
+using Infrastructure.Services;
 using Infrastructure.Stories.Queries;
 using Infrastructure.Stories.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +23,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, AppSettings config)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IAuthorizationService, AuthorizationService>();
         
         //Master Queries
         services.AddScoped<IGenreQueries, GenreQueries>();
