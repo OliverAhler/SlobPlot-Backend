@@ -55,6 +55,8 @@ public class AuthorizationService(ICurrentUserService currentUserService) : IAut
                 getOwnerId(entity).Value == currentUserId || await IsModeratorAsync(currentUserId, cancellationToken),
             AuthorizationPolicy.MustBeAdmin => 
                 await IsAdminAsync(currentUserId, cancellationToken),
+            AuthorizationPolicy.PublicOrOwner =>
+                IsPublicEntity(entity) || getOwnerId(entity).Value == currentUserId,
             _ => false
         };
         
@@ -62,6 +64,12 @@ public class AuthorizationService(ICurrentUserService currentUserService) : IAut
             return Result.Failure($"You do not have permission to access this {typeof(T).Name}");
         
         return Result.Success();
+    }
+    
+    private bool IsPublicEntity<T>(T entity)
+    {
+        var isPublicProperty = entity?.GetType().GetProperty("IsPublic");
+        return isPublicProperty?.GetValue(entity) as bool? ?? false;
     }
     
     private async Task<bool> IsModeratorAsync(Guid userId, CancellationToken cancellationToken)

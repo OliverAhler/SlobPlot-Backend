@@ -9,6 +9,7 @@ public class StoryChapter : Entity<ChapterId>
     public int ChapterNumber { get; private set; }
     public string Title { get; private set; } = null!;
     public string Body { get; private set; } = null!;
+    public bool IsPublic { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     
@@ -18,7 +19,8 @@ public class StoryChapter : Entity<ChapterId>
         StoryId storyId, 
         int chapterNumber, 
         string title, 
-        string body)
+        string body,
+        bool isPublic)
     {
         return new StoryChapter
         {
@@ -27,15 +29,17 @@ public class StoryChapter : Entity<ChapterId>
             ChapterNumber = chapterNumber,
             Title = title,
             Body = body,
+            IsPublic = isPublic,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
     }
     
-    internal void Update(string title, string body)
+    internal void Update(string title, string body,  bool isPublic)
     {
         Title = title;
         Body = body;
+        IsPublic = isPublic;
         UpdatedAt = DateTime.UtcNow;
     }
     

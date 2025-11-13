@@ -3,24 +3,32 @@ using Application.Common.Interfaces.Handlers;
 using Application.Common.Interfaces.Handlers.Messaging;
 using Application.Features.Stories.DTOs;
 using Domain.Common;
+using Domain.Common.Authorization;
+using Domain.UserManagement.ValueObjects;
 
 namespace Application.Features.Stories.Queries.GetStoryById;
 
 public record GetStoryByIdQuery(Guid Id) : IQuery<Result<StoryDetailDto>>;
 
-public class GetStoryByIdHandler(IStoryQueries storyQueries, ICurrentUserService currentUser) : IQueryHandler<GetStoryByIdQuery, Result<StoryDetailDto>>
+public class GetStoryByIdHandler(IStoryQueries storyQueries, ICurrentUserService currentUser, IAuthorizationService authorizationService) : IQueryHandler<GetStoryByIdQuery, Result<StoryDetailDto>>
 {
     public async Task<Result<StoryDetailDto>> Handle(GetStoryByIdQuery query, CancellationToken cancellationToken)
     {
+        var result = await authorizationService.AuthorizeAndFetch(
+            ct => storyQueries.GetStoryByIdAsync(query.Id, ct),
+            story => UserId.From(story.AuthorId),
+            AuthorizationPolicy.PublicOrOwner,
+            cancellationToken
+        );
+        
+        if(!result.IsSuccess)
+            return Result<StoryDetailDto>.Failure(result.Error);
+
+        var story = result.Value;
+        
         var currentUserId = await currentUser.GetUserIdAsync(cancellationToken);
-        var story = await storyQueries.GetStoryByIdAsync(query.Id, cancellationToken);
+        var enrichedDto = story with { IsOwner = story.AuthorId == currentUserId };
         
-        if (story is null)
-            return Result<StoryDetailDto>.Failure($"Story with id {query.Id} not found");
-        
-        if(story.IsPublic && story.UserId != currentUserId)
-            return Result<StoryDetailDto>.Failure($"Story with id {query.Id} is private");
-        
-        return Result<StoryDetailDto>.Success(story);
+        return Result<StoryDetailDto>.Success(enrichedDto);
     }
 }

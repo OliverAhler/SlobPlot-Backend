@@ -163,7 +163,7 @@ public class Story : AggregateRoot<StoryId>
 
     #region Chapter Management
 
-    public Result<StoryChapter> AddChapter(string title, string body)
+    public Result<StoryChapter> AddChapter(string title, string body, bool isPublic)
     {
         if (string.IsNullOrWhiteSpace(title))
             return Result<StoryChapter>.Failure("Title is required");
@@ -171,8 +171,11 @@ public class Story : AggregateRoot<StoryId>
         if (string.IsNullOrWhiteSpace(body))
             return Result<StoryChapter>.Failure("Chapter body is required");
         
-        var chapterNumber = _chapters.Count + 1;
-        var chapter = StoryChapter.Create(Id, chapterNumber, title, body);
+        var chapterNumber = _chapters.Count != 0
+            ? _chapters.Max(c => c.ChapterNumber) + 1 
+            : 1;
+        
+        var chapter = StoryChapter.Create(Id, chapterNumber, title, body, isPublic);
     
         _chapters.Add(chapter);
         UpdatedAt = DateTime.UtcNow;
@@ -180,7 +183,7 @@ public class Story : AggregateRoot<StoryId>
         return Result<StoryChapter>.Success(chapter);
     }
     
-    public Result UpdateChapter(ChapterId id, string title, string body)
+    public Result UpdateChapter(ChapterId id, string title, string body, bool isPublic)
     {
         if (string.IsNullOrWhiteSpace(title))
             return Result.Failure("Title is required");
@@ -193,7 +196,7 @@ public class Story : AggregateRoot<StoryId>
         if (chapter is null)
             return Result.Failure($"Chapter with id {id.Value} not found");
     
-        chapter.Update(title, body);
+        chapter.Update(title, body, isPublic);
         UpdatedAt = DateTime.UtcNow;
 
         return Result.Success();

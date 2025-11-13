@@ -1,7 +1,5 @@
 using Application.Features.Stories;
 using Application.Features.Stories.DTOs;
-using Domain.StoryManagement.ValueObjects;
-using Domain.UserManagement.ValueObjects;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,56 +37,26 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
                 s.Summary,
                 s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
                 s.IsPublic,
+                false, //IsOwner - Calculated in Application layer
                 s.CreatedAt,
                 s.UpdatedAt
             ))
             .FirstOrDefaultAsync(ct);
     }
-    
-    public async Task<IReadOnlyCollection<StoryListDetailedDto>> GetExpandedStoriesByUserIdAsync(Guid userId, CancellationToken ct = default)
+    public async Task<IReadOnlyCollection<StoryListDetailedDto>> GetStoriesByAuthorAsync(Guid authorId, Guid? currentUserId, CancellationToken ct = default)
     {
         return await context.Stories
             .AsNoTracking()
-            .Where(s => s.UserId == userId && !s.IsDeleted)
+            .Where(s => s.UserId == authorId && !s.IsDeleted)
+            .Where(s => s.IsPublic || s.UserId == currentUserId) //Business rule
             .Select(s => new StoryListDetailedDto(
-                s.Id, 
+                s.Id,
                 s.Title, 
                 s.UserProfile.DisplayName,
                 s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
                 s.IsPublic,
                 "Complete",
-                s.UpdatedAt,
-                s.CreatedAt
-            ))
-            .ToListAsync(ct);
-    }
-    
-    public async Task<IReadOnlyCollection<StoryListItemDto>> GetStoriesByUserIdAsync(Guid userId, CancellationToken ct = default)
-    {
-        return await context.Stories
-            .AsNoTracking()
-            .Where(s => s.UserId == userId && !s.IsDeleted)
-            .Select(s => new StoryListItemDto(
-                s.Id, 
-                s.Title, 
-                s.UserProfile.DisplayName,
-                s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
-                s.UpdatedAt,
-                s.CreatedAt
-            ))
-            .ToListAsync(ct);
-    }
-    
-    public async Task<IReadOnlyCollection<StoryListItemDto>> GetPublicStoriesByUserIdAsync(Guid userId, CancellationToken ct = default)
-    {
-        return await context.Stories
-            .AsNoTracking()
-            .Where(s => s.UserId == userId && !s.IsDeleted && s.IsPublic)
-            .Select(s => new StoryListItemDto(
-                s.Id, 
-                s.Title, 
-                s.UserProfile.DisplayName,
-                s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
+                s.UserId == currentUserId,   //IsOwner
                 s.UpdatedAt,
                 s.CreatedAt
             ))
@@ -112,4 +80,23 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
             ))
             .ToListAsync(ct);
     }
+
+    #region Chapters
+
+    public async Task<IReadOnlyCollection<ChapterListItemDto>> GetStoryChapters(Guid storyId, CancellationToken ct = default)
+    {
+        return await context.Chapters
+            .AsNoTracking()
+            .Where(s => s.StoryId == storyId && !s.IsDeleted)
+            .OrderBy(c => c.ChapterNumber)
+            .Select(chapter => new ChapterListItemDto(
+                chapter.Id,
+                chapter.Title,
+                chapter.ChapterNumber,
+                chapter.CreatedAt)
+            )
+            .ToListAsync(ct);
+    }
+
+    #endregion
 }

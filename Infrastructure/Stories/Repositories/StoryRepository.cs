@@ -17,6 +17,7 @@ public class StoryRepository(ApplicationDbContext context) : IStoryRepository
 
         return story?.ToDomain();
     }
+    
     public void AddStory(Story story)
     {
         context.Stories.Add(story.ToDb());

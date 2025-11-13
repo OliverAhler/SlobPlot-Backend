@@ -5,5 +5,6 @@ public enum AuthorizationPolicy
     MustBeOwner,
     MustBeOwnerOrModerator,
     MustBeAdmin,
-    Public // Anyone can access
+    Public, // Anyone can access
+    PublicOrOwner
 }

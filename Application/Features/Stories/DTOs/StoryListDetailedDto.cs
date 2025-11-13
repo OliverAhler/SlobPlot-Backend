@@ -7,6 +7,7 @@ public record StoryListDetailedDto(
     List<string> Genres,
     bool IsPublic,
     string Status,
+    bool IsOwner,
     DateTime UpdatedAt,
     DateTime CreatedAt
 );
