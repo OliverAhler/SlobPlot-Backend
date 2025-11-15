@@ -1,6 +1,7 @@
 using Domain.Common;
 using Domain.StoryManagement.Entities;
 using Domain.StoryManagement.ValueObjects;
+using Domain.UserManagement.Entities;
 using Domain.UserManagement.ValueObjects;
 
 
@@ -12,42 +13,30 @@ public class Story : AggregateRoot<StoryId>
     public string Title { get; private set; } = null!;
     public string? SubTitle { get; private set; }
     public string? Summary { get; private set; }
-    public bool IsPrivate { get; private set; }
+    public bool IsPublic { get; private set; }
     
     public int StoryStatusId { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     
     // Chapters collection
-    private readonly List<StoryChapter> _chapters = [];
+    private List<StoryChapter> _chapters = [];
     public IReadOnlyCollection<StoryChapter> Chapters => _chapters.AsReadOnly();
-    
-    // Genres collection
+
+    // Genres collection - for domain logic
     internal readonly List<int> _genreIds = [];
     public IReadOnlyCollection<int> GenreIds => _genreIds.AsReadOnly();
-    
+
+    // Navigation properties - for EF Core queries only (not exposed for domain logic)
+    private UserProfile? _author;
+    public UserProfile? Author => _author;
+
+    private List<Genre> _genres = [];
+    public IReadOnlyCollection<Genre> Genres => _genres.AsReadOnly();
+
     private Story() {}
     
-    #region Database Reconstitute
-    internal static Story Reconstitute(Guid id, Guid userId, string title, string? subTitle, string? summary, bool isPrivate, int statusId, DateTime createdAt, DateTime updatedAt)
-    {
-        return new Story
-        {
-            Id = StoryId.From(id),
-            AuthorId = UserId.From(userId),
-            Title = title,
-            SubTitle = subTitle,
-            Summary = summary,
-            IsPrivate = isPrivate,
-            StoryStatusId = statusId,
-            CreatedAt = createdAt,
-            UpdatedAt = updatedAt
-        };
-    }
-    #endregion
-    
-    
-    public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPrivate, int[] genreIds)
+    public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPublic, int[] genreIds)
     {
         if(userId.Value == Guid.Empty)
             return Result<Story>.Failure("Invalid userId");
@@ -74,7 +63,7 @@ public class Story : AggregateRoot<StoryId>
             SubTitle = subTitle,
             Summary = summary,
             StoryStatusId = StoryStatus.Planned,
-            IsPrivate = isPrivate,
+            IsPublic = isPublic,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -135,9 +124,9 @@ public class Story : AggregateRoot<StoryId>
         return Result.Success();
     }
 
-    public void UpdatePrivacy(bool isPrivate)
+    public void UpdatePrivacy(bool isPublic)
     {
-        IsPrivate = isPrivate;
+        IsPublic = isPublic;
         UpdatedAt = DateTime.UtcNow;
     }
     
@@ -163,7 +152,7 @@ public class Story : AggregateRoot<StoryId>
 
     #region Chapter Management
 
-    public Result<StoryChapter> AddChapter(string title, string body)
+    public Result<StoryChapter> AddChapter(string title, string body, bool isPublic)
     {
         if (string.IsNullOrWhiteSpace(title))
             return Result<StoryChapter>.Failure("Title is required");
@@ -171,8 +160,11 @@ public class Story : AggregateRoot<StoryId>
         if (string.IsNullOrWhiteSpace(body))
             return Result<StoryChapter>.Failure("Chapter body is required");
         
-        var chapterNumber = _chapters.Count + 1;
-        var chapter = StoryChapter.Create(Id, chapterNumber, title, body);
+        var chapterNumber = _chapters.Count != 0
+            ? _chapters.Max(c => c.ChapterNumber) + 1 
+            : 1;
+        
+        var chapter = StoryChapter.Create(Id, chapterNumber, title, body, isPublic);
     
         _chapters.Add(chapter);
         UpdatedAt = DateTime.UtcNow;
@@ -180,7 +172,7 @@ public class Story : AggregateRoot<StoryId>
         return Result<StoryChapter>.Success(chapter);
     }
     
-    public Result UpdateChapter(ChapterId id, string title, string body)
+    public Result UpdateChapter(ChapterId id, string title, string body, bool isPublic)
     {
         if (string.IsNullOrWhiteSpace(title))
             return Result.Failure("Title is required");
@@ -193,7 +185,7 @@ public class Story : AggregateRoot<StoryId>
         if (chapter is null)
             return Result.Failure($"Chapter with id {id.Value} not found");
     
-        chapter.Update(title, body);
+        chapter.Update(title, body, isPublic);
         UpdatedAt = DateTime.UtcNow;
 
         return Result.Success();

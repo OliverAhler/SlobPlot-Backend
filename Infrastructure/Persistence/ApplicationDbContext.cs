@@ -1,6 +1,8 @@
-using Infrastructure.Identity.Entities;
+using Domain.StoryManagement.Aggregates;
+using Domain.StoryManagement.Entities;
+using Domain.UserManagement.Aggregates;
+using Domain.UserManagement.Entities;
 using Infrastructure.Master.Entities;
-using Infrastructure.Stories.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
@@ -8,19 +10,18 @@ namespace Infrastructure.Persistence;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
     //Master
-    public DbSet<DbGenre> Genre { get; set; } = null!;
+    public DbSet<Genre> Genre { get; set; } = null!;
     public DbSet<DbStatus> Status { get; set; } = null!;
-    
+
     //Identity
-    public DbSet<DbUser> Users { get; set; } = null!;
-    public DbSet<DbUserProfile> UserProfiles { get; set; } = null!;
-    
+    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<UserProfile> UserProfiles { get; set; } = null!;
+
     //Story
-    public DbSet<DbStory> Stories { get; set; } = null!;
-    public DbSet<DbChapter> Chapters { get; set; } = null!;
-    public DbSet<DbStoryGenre> StoryGenres { get; set; } = null!;
-    
-    
+    public DbSet<Story> Stories { get; set; } = null!;
+    public DbSet<StoryChapter> Chapters { get; set; } = null!;
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

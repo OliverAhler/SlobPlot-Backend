@@ -1,11 +1,15 @@
+using API.Contracts.Stories.CreateChapter;
 using API.Contracts.Stories.CreateStory;
 using API.Contracts.Stories.UpdateStory;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Handlers;
+using Application.Features.Stories.Commands.AddChapter;
 using Application.Features.Stories.Commands.CreateStory;
 using Application.Features.Stories.Commands.UpdateStory;
+using Application.Features.Stories.Queries.GetChapterById;
 using Application.Features.Stories.Queries.GetStories;
 using Application.Features.Stories.Queries.GetStoryById;
+using Application.Features.Stories.Queries.GetStoryChapters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,7 +49,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     [Authorize]
     public async Task<IActionResult> UpdateStoryPrivacy([FromRoute] Guid storyId, [FromBody] UpdateStoryPrivacyRequest request, CancellationToken cancellationToken)
     {
-        var command = new UpdateStoryPrivacyCommand(storyId, request.IsPrivate);
+        var command = new UpdateStoryPrivacyCommand(storyId, request.IsPublic);
 
         var result = await dispatcher.Dispatch(command, cancellationToken);
         
@@ -67,4 +71,50 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
             ? Ok(result.Value) 
             : BadRequest(result.Error);
     }
+
+
+    #region Chapters
+
+    [HttpGet]
+    [Route("{storyId:guid}/chapters")]
+    public async Task<IActionResult> GetStoryChapters([FromRoute] Guid storyId, CancellationToken cancellationToken)
+    {
+        var query = new GetStoryChaptersQuery(storyId);
+        var result = await dispatcher.Dispatch(query, cancellationToken);
+        
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : BadRequest(result.Error);
+    }
+
+    [HttpPost]
+    [Route("{storyId:guid}/chapters")]
+    [Authorize]
+    public async Task<IActionResult> AddStoryChapter([FromRoute] Guid storyId,
+        [FromBody] CreateChapterRequest request, CancellationToken cancellationToken)
+    {
+        var command = new AddChapterCommand(storyId, request.Title, request.Body, request.IsPublic);
+        var result = await dispatcher.Dispatch(command, cancellationToken);
+        
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : BadRequest(result.Error);
+    }
+    
+    [HttpGet("{storyId:guid}/chapters/{chapterId:guid}")]
+    public async Task<IActionResult> GetChapterById(
+        [FromRoute] Guid storyId,
+        [FromRoute] Guid chapterId, 
+        CancellationToken cancellationToken)
+    {
+        var query = new GetChapterByIdQuery(storyId, chapterId);
+        var result = await dispatcher.Dispatch(query, cancellationToken);
+    
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : NotFound(result.Error);  // ← Use NotFound for missing resources
+    }
+
+    #endregion
+    
 }

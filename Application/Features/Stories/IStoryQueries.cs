@@ -7,8 +7,12 @@ public interface IStoryQueries
     Task<IReadOnlyCollection<StoryListItemDto>> GetStoriesAsync(CancellationToken ct = default);
     Task<StoryDetailDto?> GetStoryByIdAsync(Guid id, CancellationToken ct = default);
 
-    Task<IReadOnlyCollection<StoryListDetailedDto>> GetExpandedStoriesByUserIdAsync(Guid userId, CancellationToken ct = default);
-    Task<IReadOnlyCollection<StoryListItemDto>> GetStoriesByUserIdAsync(Guid authorId, CancellationToken ct = default);
-    Task<IReadOnlyCollection<StoryListItemDto>> GetPublicStoriesByUserIdAsync(Guid authorId, CancellationToken ct = default);
+    Task<IReadOnlyCollection<StoryListDetailedDto>> GetStoriesByAuthorAsync(Guid authorId, Guid? currentUserId, CancellationToken ct = default);
     Task<IReadOnlyCollection<StoryListItemDto>> SearchStoriesAsync(string searchTerm, CancellationToken ct = default);
+
+    //Chapters
+    Task<IReadOnlyCollection<ChapterListItemDto>> GetStoryChaptersAsync(Guid storyId, CancellationToken ct = default);
+    Task<ChapterDetailDto?> GetChapterDetailAsync(Guid storyId, Guid chapterId, CancellationToken ct = default);
+
+
 }

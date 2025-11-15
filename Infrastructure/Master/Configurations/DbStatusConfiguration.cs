@@ -8,9 +8,6 @@ public class DbStatusConfiguration : IEntityTypeConfiguration<DbStatus>
 {
     public void Configure(EntityTypeBuilder<DbStatus> builder)
     {
-        builder.HasMany(s => s.Stories)
-            .WithOne(s => s.Status)
-            .HasForeignKey(story => story.StoryStatusId)
-            .OnDelete(DeleteBehavior.Restrict);
+        // No additional configuration needed - using data annotations
     }
 }
