@@ -19,7 +19,7 @@ public class Story : AggregateRoot<StoryId>
     public DateTime UpdatedAt { get; private set; }
     
     // Chapters collection
-    private readonly List<StoryChapter> _chapters = [];
+    private List<StoryChapter> _chapters = [];
     public IReadOnlyCollection<StoryChapter> Chapters => _chapters.AsReadOnly();
     
     // Genres collection

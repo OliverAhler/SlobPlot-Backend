@@ -1,4 +1,5 @@
 using Domain.Common;
+using Domain.StoryManagement.Aggregates;
 using Domain.StoryManagement.ValueObjects;
 
 namespace Domain.StoryManagement.Entities;
@@ -14,6 +15,32 @@ public class StoryChapter : Entity<ChapterId>
     public DateTime UpdatedAt { get; private set; }
     
     private StoryChapter() {}
+    
+    #region Database Reconstitute
+    internal static StoryChapter Reconstitute(
+        Guid id,
+        Guid storyId,
+        int chapterNumber,
+        string title,
+        string body,
+        bool isPublic,
+        DateTime createdAt,
+        DateTime updatedAt)
+    {
+        return new StoryChapter
+        {
+            Id = ChapterId.From(id),
+            StoryId = StoryId.From(storyId),
+            ChapterNumber = chapterNumber,
+            Title = title,
+            Body = body,
+            IsPublic = isPublic,
+            CreatedAt = createdAt,
+            UpdatedAt = updatedAt
+        };
+    }
+
+    #endregion
     
     internal static StoryChapter Create(
         StoryId storyId, 

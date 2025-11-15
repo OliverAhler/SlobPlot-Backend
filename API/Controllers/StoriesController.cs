@@ -87,7 +87,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     }
 
     [HttpPost]
-    [Route("{storyId:guid}")]
+    [Route("{storyId:guid}/chapters")]
     [Authorize]
     public async Task<IActionResult> AddStoryChapter([FromRoute] Guid storyId,
         [FromBody] CreateChapterRequest request, CancellationToken cancellationToken)

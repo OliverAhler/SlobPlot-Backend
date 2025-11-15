@@ -12,7 +12,7 @@ public class StoryRepository(ApplicationDbContext context) : IStoryRepository
     public async Task<Story?> GetStoryById(StoryId storyId, CancellationToken cancellationToken)
     {
         var story = await context.Stories
-            .AsNoTracking()
+            .Include(s => s.Chapters)
             .FirstOrDefaultAsync(story => story.Id == storyId.Value, cancellationToken);
 
         return story?.ToDomain();
