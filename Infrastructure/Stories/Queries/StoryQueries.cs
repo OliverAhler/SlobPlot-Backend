@@ -1,5 +1,7 @@
 using Application.Features.Stories;
 using Application.Features.Stories.DTOs;
+using Domain.StoryManagement.ValueObjects;
+using Domain.UserManagement.ValueObjects;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,31 +13,37 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
     {
         return await context.Stories
             .AsNoTracking()
-            .Where(s => !s.IsDeleted && s.IsPublic)
+            .Include(s => s.Author)
+            .Include(s => s.Genres)
+            .Where(s => s.IsPublic)
             .Select(s => new StoryListItemDto(
-                s.Id, 
-                s.Title, 
-                s.UserProfile.DisplayName,
-                s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
+                s.Id.Value,
+                s.Title,
+                s.Author!.DisplayName,
+                s.Genres.Select(g => g.DisplayName).ToList(),
                 s.UpdatedAt,
                 s.CreatedAt
             ))
             .ToListAsync(ct);
     }
-    
+
     public async Task<StoryDetailDto?> GetStoryByIdAsync(Guid id, CancellationToken ct = default)
     {
+        var storyId = StoryId.From(id);
+
         return await context.Stories
             .AsNoTracking()
-            .Where(s => s.Id == id && !s.IsDeleted)
+            .Include(s => s.Author)
+            .Include(s => s.Genres)
+            .Where(s => s.Id == storyId)
             .Select(s => new StoryDetailDto(
-                s.Id,
-                s.UserId,
-                s.UserProfile.DisplayName,
+                s.Id.Value,
+                s.AuthorId.Value,
+                s.Author!.DisplayName,
                 s.Title,
-                s.Subtitle,
+                s.SubTitle,
                 s.Summary,
-                s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
+                s.Genres.Select(g => g.DisplayName).ToList(),
                 s.IsPublic,
                 false, //IsOwner - Calculated in Application layer
                 s.CreatedAt,
@@ -43,38 +51,46 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
             ))
             .FirstOrDefaultAsync(ct);
     }
+
     public async Task<IReadOnlyCollection<StoryListDetailedDto>> GetStoriesByAuthorAsync(Guid authorId, Guid? currentUserId, CancellationToken ct = default)
     {
+        var authorUserId = UserId.From(authorId);
+        var currentUserIdValue = currentUserId.HasValue ? UserId.From(currentUserId.Value) : (UserId?)null;
+
         return await context.Stories
             .AsNoTracking()
-            .Where(s => s.UserId == authorId && !s.IsDeleted)
-            .Where(s => s.IsPublic || s.UserId == currentUserId) //Business rule
+            .Include(s => s.Author)
+            .Include(s => s.Genres)
+            .Where(s => s.AuthorId == authorUserId
+                     && (s.IsPublic || (currentUserIdValue != null && s.AuthorId == currentUserIdValue)))
             .Select(s => new StoryListDetailedDto(
-                s.Id,
-                s.Title, 
-                s.UserProfile.DisplayName,
-                s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
+                s.Id.Value,
+                s.Title,
+                s.Author!.DisplayName,
+                s.Genres.Select(g => g.DisplayName).ToList(),
                 s.IsPublic,
                 "Complete",
-                s.UserId == currentUserId,   //IsOwner
+                currentUserIdValue != null && s.AuthorId == currentUserIdValue,
                 s.UpdatedAt,
                 s.CreatedAt
             ))
             .ToListAsync(ct);
     }
-    
+
     public async Task<IReadOnlyCollection<StoryListItemDto>> SearchStoriesAsync(string searchTerm, CancellationToken ct = default)
     {
-        var lowerSearchTerm = searchTerm.ToLower(); 
-        
+        var lowerSearchTerm = searchTerm.ToLower();
+
         return await context.Stories
             .AsNoTracking()
-            .Where(s => s.Title.ToLower().Contains(lowerSearchTerm) && !s.IsDeleted)
+            .Include(s => s.Author)
+            .Include(s => s.Genres)
+            .Where(s => s.Title.ToLower().Contains(lowerSearchTerm))
             .Select(s => new StoryListItemDto(
-                s.Id, 
-                s.Title, 
-                s.UserProfile.DisplayName,
-                s.StoryGenres.Select(p => p.Genre.DisplayName).ToList(),
+                s.Id.Value,
+                s.Title,
+                s.Author!.DisplayName,
+                s.Genres.Select(g => g.DisplayName).ToList(),
                 s.UpdatedAt,
                 s.CreatedAt
             ))
@@ -85,12 +101,14 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
 
     public async Task<IReadOnlyCollection<ChapterListItemDto>> GetStoryChapters(Guid storyId, CancellationToken ct = default)
     {
+        var storyIdValue = StoryId.From(storyId);
+
         return await context.Chapters
             .AsNoTracking()
-            .Where(s => s.StoryId == storyId && !s.IsDeleted)
+            .Where(c => c.StoryId == storyIdValue)
             .OrderBy(c => c.ChapterNumber)
             .Select(chapter => new ChapterListItemDto(
-                chapter.Id,
+                chapter.Id.Value,
                 chapter.Title,
                 chapter.ChapterNumber,
                 chapter.CreatedAt)

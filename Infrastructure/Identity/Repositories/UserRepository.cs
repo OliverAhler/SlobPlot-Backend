@@ -1,6 +1,5 @@
 using Application.Features.Auth;
 using Domain.UserManagement.Aggregates;
-using Infrastructure.Identity.Mappers;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,20 +10,17 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
     public async Task<User?> GetUserBySubAsync(Guid subUid, CancellationToken cancellationToken)
     {
         return await context.Users
-            .Where(u => u.SubUid == subUid && !u.IsDeleted)
-            .ProjectToDomain()
-            .FirstOrDefaultAsync(cancellationToken);
+            .Include(u => u.Profile)
+            .FirstOrDefaultAsync(u => u.SubUid == subUid, cancellationToken);
     }
 
     public void AddUser(User user)
     {
-        var dbUser = user.ToDb();
-        context.Users.Add(dbUser);
+        context.Users.Add(user);
     }
 
     public void UpdateUser(User user)
     {
-        var dbUser = user.ToDb();
-        context.Users.Update(dbUser);
+        context.Users.Update(user);
     }
 }

@@ -1,5 +1,6 @@
 using Application.Features.UserProfiles;
 using Application.Features.UserProfiles.DTOs;
+using Domain.UserManagement.ValueObjects;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,14 +10,16 @@ public class UserProfileQueries(ApplicationDbContext context) : IUserProfileQuer
 {
     public async Task<UserProfileDto?> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
     {
+        var userIdValue = UserId.From(userId);
+
         return await context.UserProfiles
             .AsNoTracking()
-            .Where(u => u.UserId == userId)
-            .Select(u => new UserProfileDto(
-                u.UserId,
-                u.DisplayName,
-                u.Bio,
-                u.UpdatedAt)
+            .Where(p => p.Id == userIdValue)
+            .Select(p => new UserProfileDto(
+                p.Id.Value,
+                p.DisplayName,
+                p.Bio,
+                p.UpdatedAt)
             )
             .FirstOrDefaultAsync(cancellationToken);
     }

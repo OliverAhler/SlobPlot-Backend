@@ -1,6 +1,7 @@
 using Domain.Common;
 using Domain.StoryManagement.Entities;
 using Domain.StoryManagement.ValueObjects;
+using Domain.UserManagement.Entities;
 using Domain.UserManagement.ValueObjects;
 
 
@@ -21,31 +22,19 @@ public class Story : AggregateRoot<StoryId>
     // Chapters collection
     private List<StoryChapter> _chapters = [];
     public IReadOnlyCollection<StoryChapter> Chapters => _chapters.AsReadOnly();
-    
-    // Genres collection
+
+    // Genres collection - for domain logic
     internal readonly List<int> _genreIds = [];
     public IReadOnlyCollection<int> GenreIds => _genreIds.AsReadOnly();
-    
+
+    // Navigation properties - for EF Core queries only (not exposed for domain logic)
+    private UserProfile? _author;
+    public UserProfile? Author => _author;
+
+    private List<Genre> _genres = [];
+    public IReadOnlyCollection<Genre> Genres => _genres.AsReadOnly();
+
     private Story() {}
-    
-    #region Database Reconstitute
-    internal static Story Reconstitute(Guid id, Guid userId, string title, string? subTitle, string? summary, bool isPublic, int statusId, DateTime createdAt, DateTime updatedAt)
-    {
-        return new Story
-        {
-            Id = StoryId.From(id),
-            AuthorId = UserId.From(userId),
-            Title = title,
-            SubTitle = subTitle,
-            Summary = summary,
-            IsPublic = isPublic,
-            StoryStatusId = statusId,
-            CreatedAt = createdAt,
-            UpdatedAt = updatedAt
-        };
-    }
-    #endregion
-    
     
     public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPublic, int[] genreIds)
     {
