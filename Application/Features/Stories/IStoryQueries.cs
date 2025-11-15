@@ -11,7 +11,8 @@ public interface IStoryQueries
     Task<IReadOnlyCollection<StoryListItemDto>> SearchStoriesAsync(string searchTerm, CancellationToken ct = default);
 
     //Chapters
-    Task<IReadOnlyCollection<ChapterListItemDto>> GetStoryChapters(Guid storyId, CancellationToken ct = default);
+    Task<IReadOnlyCollection<ChapterListItemDto>> GetStoryChaptersAsync(Guid storyId, CancellationToken ct = default);
+    Task<ChapterDetailDto?> GetChapterDetailAsync(Guid storyId, Guid chapterId, CancellationToken ct = default);
 
 
 }

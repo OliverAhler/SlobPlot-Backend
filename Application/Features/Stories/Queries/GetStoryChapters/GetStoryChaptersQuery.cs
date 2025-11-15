@@ -26,7 +26,7 @@ public class GetStoryChaptersQueryHandler(IStoryQueries storyQueries, IAuthoriza
         
         var story = result.Value;
         
-        var storyChapters = await storyQueries.GetStoryChapters(story.Id, cancellationToken);
+        var storyChapters = await storyQueries.GetStoryChaptersAsync(story.Id, cancellationToken);
         
         return Result<IReadOnlyCollection<ChapterListItemDto>>.Success(storyChapters);
     }

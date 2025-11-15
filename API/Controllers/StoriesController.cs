@@ -6,6 +6,7 @@ using Application.Common.Interfaces.Handlers;
 using Application.Features.Stories.Commands.AddChapter;
 using Application.Features.Stories.Commands.CreateStory;
 using Application.Features.Stories.Commands.UpdateStory;
+using Application.Features.Stories.Queries.GetChapterById;
 using Application.Features.Stories.Queries.GetStories;
 using Application.Features.Stories.Queries.GetStoryById;
 using Application.Features.Stories.Queries.GetStoryChapters;
@@ -98,6 +99,20 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
         return result.IsSuccess 
             ? Ok(result.Value) 
             : BadRequest(result.Error);
+    }
+    
+    [HttpGet("{storyId:guid}/chapters/{chapterId:guid}")]
+    public async Task<IActionResult> GetChapterById(
+        [FromRoute] Guid storyId,
+        [FromRoute] Guid chapterId, 
+        CancellationToken cancellationToken)
+    {
+        var query = new GetChapterByIdQuery(storyId, chapterId);
+        var result = await dispatcher.Dispatch(query, cancellationToken);
+    
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : NotFound(result.Error);  // ← Use NotFound for missing resources
     }
 
     #endregion

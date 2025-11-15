@@ -99,7 +99,7 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
 
     #region Chapters
 
-    public async Task<IReadOnlyCollection<ChapterListItemDto>> GetStoryChapters(Guid storyId, CancellationToken ct = default)
+    public async Task<IReadOnlyCollection<ChapterListItemDto>> GetStoryChaptersAsync(Guid storyId, CancellationToken ct = default)
     {
         var storyIdValue = StoryId.From(storyId);
 
@@ -114,6 +114,21 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
                 chapter.CreatedAt)
             )
             .ToListAsync(ct);
+    }
+
+    public async Task<ChapterDetailDto?> GetChapterDetailAsync(Guid storyId, Guid chapterId, CancellationToken ct = default)
+    {
+        return await context.Chapters
+            .AsNoTracking()
+            .Where(c => c.Id == ChapterId.From(chapterId) && c.StoryId == StoryId.From(storyId))
+            .Select(chapter => new ChapterDetailDto(
+                chapter.Id.Value,
+                chapter.StoryId.Value,
+                chapter.Title,
+                chapter.Body,
+                chapter.ChapterNumber)
+            )
+            .FirstOrDefaultAsync(ct);
     }
 
     #endregion
