@@ -35,11 +35,21 @@ public class StoryChapter : Entity<ChapterId>
         };
     }
     
-    internal void Update(string title, string body,  bool isPublic)
+    internal void UpdateTitle(string title)
     {
         Title = title;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    
+    internal void UpdateBody(string body)
+    {
         Body = body;
-        IsPublic = isPublic;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    
+    internal void UpdatePrivacy(bool isPublic)
+    {
+        isPublic = isPublic;
         UpdatedAt = DateTime.UtcNow;
     }
     

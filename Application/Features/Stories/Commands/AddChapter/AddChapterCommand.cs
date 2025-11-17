@@ -16,21 +16,17 @@ public class AddChapterCommandHandler(IStoryRepository storyRepository, IAuthori
     {
         var storyId = StoryId.From(command.StoryId);
 
-        var story = await storyRepository.GetStoryById(storyId, cancellationToken);
-        
-        if(story is null)
-            return Result<Guid>.Failure("Story not found");
-        
-        var authResult = await authorizationService.Authorize(
-            story,
-            s => s.AuthorId,
-            AuthorizationPolicy.MustBeOwner,
+        var storyAuthResult = await authorizationService.AuthorizeAndFetch(
+            ct => storyRepository.GetStoryById(storyId, ct),
+            story => story.AuthorId,
+            AuthorizationPolicy.PublicOrOwner,
             cancellationToken
         );
         
-        if (!authResult.IsSuccess)
-            return Result<Guid>.Failure(authResult.Error);
-        
+        if (!storyAuthResult.IsSuccess)
+            return Result<Guid>.Failure(storyAuthResult.Error);
+
+        var story = storyAuthResult.Value;
         var result = story.AddChapter(command.Title, command.Body, command.IsPublic);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

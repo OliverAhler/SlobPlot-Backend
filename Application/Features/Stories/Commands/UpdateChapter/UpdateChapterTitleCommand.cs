@@ -6,13 +6,13 @@ using Domain.Common;
 using Domain.Common.Authorization;
 using Domain.StoryManagement.ValueObjects;
 
-namespace Application.Features.Stories.Commands.UpdateStory;
+namespace Application.Features.Stories.Commands.UpdateChapter;
 
-public record UpdateStoryTitleCommand(Guid  StoryId, string Title) : ICommand<Result>;
+public record UpdateChapterTitleCommand(Guid  StoryId, Guid ChapterId, string Title) : ICommand<Result>;
 
-public class UpdateStoryTitleCommandHandler(IStoryRepository storyRepository, IUnitOfWork unitOfWork, IAuthorizationService authorizationService) : ICommandHandler<UpdateStoryTitleCommand, Result>
+public class UpdateChapterTitleCommandHandler(IStoryRepository storyRepository, IUnitOfWork unitOfWork, IAuthorizationService authorizationService) : ICommandHandler<UpdateChapterTitleCommand, Result>
 {
-    public async Task<Result> Handle(UpdateStoryTitleCommand command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateChapterTitleCommand command, CancellationToken cancellationToken)
     {
         var storyId = StoryId.From(command.StoryId);
 
@@ -24,10 +24,12 @@ public class UpdateStoryTitleCommandHandler(IStoryRepository storyRepository, IU
         );
 
         if (!storyAuthResult.IsSuccess)
-            return storyAuthResult;
+            return Result.Failure(storyAuthResult.Error);
+        
+        var chapterId = ChapterId.From(command.ChapterId);
         
         var story = storyAuthResult.Value;
-        story.UpdateTitle(command.Title);
+        story.UpdateChapterTitle(chapterId, command.Title);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         

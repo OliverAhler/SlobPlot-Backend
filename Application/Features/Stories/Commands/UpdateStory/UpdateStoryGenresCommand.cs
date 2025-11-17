@@ -19,7 +19,7 @@ public class UpdateStoryGenresCommandHandler(IStoryRepository storyRepository, I
         var storyAuthResult = await authorizationService.AuthorizeAndFetch(
             ct => storyRepository.GetStoryById(storyId, ct),
             story => story.AuthorId,
-            AuthorizationPolicy.PublicOrOwner,
+            AuthorizationPolicy.MustBeOwner,
             cancellationToken
         );
 

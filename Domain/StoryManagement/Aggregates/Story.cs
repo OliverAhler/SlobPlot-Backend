@@ -172,11 +172,24 @@ public class Story : AggregateRoot<StoryId>
         return Result<StoryChapter>.Success(chapter);
     }
     
-    public Result UpdateChapter(ChapterId id, string title, string body, bool isPublic)
+    public Result UpdateChapterTitle(ChapterId id, string title)
     {
         if (string.IsNullOrWhiteSpace(title))
             return Result.Failure("Title is required");
+
+        var chapter = _chapters.FirstOrDefault(c => c.Id == id);
     
+        if (chapter is null)
+            return Result.Failure($"Chapter with id {id.Value} not found");
+    
+        chapter.UpdateTitle(title);
+        UpdatedAt = DateTime.UtcNow;
+
+        return Result.Success();
+    }
+
+    public Result UpdateChapterBody(ChapterId id, string body)
+    {
         if (string.IsNullOrWhiteSpace(body))
             return Result.Failure("Chapter body is required");
 
@@ -185,7 +198,20 @@ public class Story : AggregateRoot<StoryId>
         if (chapter is null)
             return Result.Failure($"Chapter with id {id.Value} not found");
     
-        chapter.Update(title, body, isPublic);
+        chapter.UpdateBody(body);
+        UpdatedAt = DateTime.UtcNow;
+
+        return Result.Success();
+    }
+
+    public Result UpdateChapterPrivacy(ChapterId id, bool isPublic)
+    {
+        var chapter = _chapters.FirstOrDefault(c => c.Id == id);
+    
+        if (chapter is null)
+            return Result.Failure($"Chapter with id {id.Value} not found");
+    
+        chapter.UpdatePrivacy(isPublic);
         UpdatedAt = DateTime.UtcNow;
 
         return Result.Success();
