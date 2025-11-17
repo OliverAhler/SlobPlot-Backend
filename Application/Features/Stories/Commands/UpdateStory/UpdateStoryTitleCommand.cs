@@ -8,29 +8,27 @@ using Domain.StoryManagement.ValueObjects;
 
 namespace Application.Features.Stories.Commands.UpdateStory;
 
-public record UpdateStoryPrivacyCommand(Guid StoryId, bool IsPublic) : ICommand<Result>;
+public record UpdateStoryTitleCommand(Guid  StoryId, string Title) : ICommand<Result>;
 
-public class UpdateStoryPrivacyHandler(IStoryRepository storyRepository, IAuthorizationService authorizationService, IUnitOfWork unitOfWork) : ICommandHandler<UpdateStoryPrivacyCommand, Result>
+public class UpdateStoryTitleCommandHandler(IStoryRepository storyRepository, IUnitOfWork unitOfWork, IAuthorizationService authorizationService) : ICommandHandler<UpdateStoryTitleCommand, Result>
 {
-    public async Task<Result> Handle(UpdateStoryPrivacyCommand command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateStoryTitleCommand command, CancellationToken cancellationToken)
     {
         var storyId = StoryId.From(command.StoryId);
 
         var storyAuthResult = await authorizationService.AuthorizeAndFetch(
             ct => storyRepository.GetStoryById(storyId, ct),
             story => story.AuthorId,
-            AuthorizationPolicy.MustBeOwner,
+            AuthorizationPolicy.PublicOrOwner,
             cancellationToken
         );
 
         if (!storyAuthResult.IsSuccess)
             return storyAuthResult;
-
+        
         var story = storyAuthResult.Value;
-        
-        story.UpdatePrivacy(command.IsPublic);
-        storyRepository.UpdateStory(story);
-        
+        story.UpdateTitle(command.Title);
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
         
         return Result.Success();

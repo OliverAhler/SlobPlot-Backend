@@ -43,9 +43,11 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
             ? Ok(result.Value) 
             : NotFound(result.Error);
     }
+
+    #region Story Patches
     
-    [HttpPut]
-    [Route("{storyId:guid}")]
+    [HttpPatch]
+    [Route("{storyId:guid}/privacy")]
     [Authorize]
     public async Task<IActionResult> UpdateStoryPrivacy([FromRoute] Guid storyId, [FromBody] UpdateStoryPrivacyRequest request, CancellationToken cancellationToken)
     {
@@ -57,6 +59,64 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
             ? Ok(result) 
             : NotFound(result.Error);
     }
+    
+    [HttpPatch]
+    [Route("{storyId:guid}/title")]
+    [Authorize]
+    public async Task<IActionResult> UpdateStoryTitle([FromRoute] Guid storyId, [FromBody] UpdateStoryTitleRequest request, CancellationToken cancellationToken)
+    {
+        var command = new UpdateStoryTitleCommand(storyId, request.Title);
+
+        var result = await dispatcher.Dispatch(command, cancellationToken);
+        
+        return result.IsSuccess 
+            ? Ok(result) 
+            : NotFound(result.Error);
+    }
+    
+    [HttpPatch]
+    [Route("{storyId:guid}/subtitle")]
+    [Authorize]
+    public async Task<IActionResult> UpdateStorySubTitle([FromRoute] Guid storyId, [FromBody] UpdateStorySubTitleRequest request, CancellationToken cancellationToken)
+    {
+        var command = new UpdateStorySubTitleCommand(storyId, request.SubTitle);
+
+        var result = await dispatcher.Dispatch(command, cancellationToken);
+        
+        return result.IsSuccess 
+            ? Ok(result) 
+            : NotFound(result.Error);
+    }
+    
+    [HttpPatch]
+    [Route("{storyId:guid}/summary")]
+    [Authorize]
+    public async Task<IActionResult> UpdateStorySummary([FromRoute] Guid storyId, [FromBody] UpdateStorySummaryRequest request, CancellationToken cancellationToken)
+    {
+        var command = new UpdateStorySummaryCommand(storyId, request.Summary);
+
+        var result = await dispatcher.Dispatch(command, cancellationToken);
+        
+        return result.IsSuccess 
+            ? Ok(result) 
+            : NotFound(result.Error);
+    }
+    
+    [HttpPatch]
+    [Route("{storyId:guid}/genres")]
+    [Authorize]
+    public async Task<IActionResult> UpdateStoryGenres([FromRoute] Guid storyId, [FromBody] UpdateStoryGenresRequest request, CancellationToken cancellationToken)
+    {
+        var command = new UpdateStoryGenresCommand(storyId, request.GenreIds);
+
+        var result = await dispatcher.Dispatch(command, cancellationToken);
+        
+        return result.IsSuccess 
+            ? Ok(result) 
+            : NotFound(result.Error);
+    }
+    
+    #endregion
     
     [HttpPost]
     [Authorize]
