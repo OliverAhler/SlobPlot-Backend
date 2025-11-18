@@ -103,7 +103,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     }
     
     [HttpPatch]
-    [Route("{storyId:guid}/genres")]
+    [Route("{storyId:guid}/genre")]
     [Authorize]
     public async Task<IActionResult> UpdateStoryGenres([FromRoute] Guid storyId, [FromBody] UpdateStoryGenresRequest request, CancellationToken cancellationToken)
     {
