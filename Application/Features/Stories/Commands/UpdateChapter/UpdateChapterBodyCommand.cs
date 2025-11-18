@@ -6,13 +6,13 @@ using Domain.Common;
 using Domain.Common.Authorization;
 using Domain.StoryManagement.ValueObjects;
 
-namespace Application.Features.Stories.Commands.UpdateStory;
+namespace Application.Features.Stories.Commands.UpdateChapter;
 
-public record UpdateStoryPrivacyCommand(Guid StoryId, bool IsPublic) : ICommand<Result>;
+public record UpdateChapterBodyCommand(Guid  StoryId, Guid ChapterId, string Title) : ICommand<Result>;
 
-public class UpdateStoryPrivacyHandler(IStoryRepository storyRepository, IAuthorizationService authorizationService, IUnitOfWork unitOfWork) : ICommandHandler<UpdateStoryPrivacyCommand, Result>
+public class UpdateChapterBodyCommandHandler(IStoryRepository storyRepository, IUnitOfWork unitOfWork, IAuthorizationService authorizationService) : ICommandHandler<UpdateChapterBodyCommand, Result>
 {
-    public async Task<Result> Handle(UpdateStoryPrivacyCommand command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateChapterBodyCommand command, CancellationToken cancellationToken)
     {
         var storyId = StoryId.From(command.StoryId);
 
@@ -24,13 +24,13 @@ public class UpdateStoryPrivacyHandler(IStoryRepository storyRepository, IAuthor
         );
 
         if (!storyAuthResult.IsSuccess)
-            return storyAuthResult;
-
+            return Result.Failure(storyAuthResult.Error);
+        
+        var chapterId = ChapterId.From(command.ChapterId);
+        
         var story = storyAuthResult.Value;
-        
-        story.UpdatePrivacy(command.IsPublic);
-        storyRepository.UpdateStory(story);
-        
+        story.UpdateChapterBody(chapterId, command.Title);
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
         
         return Result.Success();

@@ -8,11 +8,11 @@ using Domain.StoryManagement.ValueObjects;
 
 namespace Application.Features.Stories.Commands.UpdateStory;
 
-public record UpdateStoryPrivacyCommand(Guid StoryId, bool IsPublic) : ICommand<Result>;
+public record UpdateStorySummaryCommand(Guid  StoryId, string Summary) : ICommand<Result>;
 
-public class UpdateStoryPrivacyHandler(IStoryRepository storyRepository, IAuthorizationService authorizationService, IUnitOfWork unitOfWork) : ICommandHandler<UpdateStoryPrivacyCommand, Result>
+public class UpdateStorySummaryCommandHandler(IStoryRepository storyRepository, IUnitOfWork unitOfWork, IAuthorizationService authorizationService) : ICommandHandler<UpdateStorySummaryCommand, Result>
 {
-    public async Task<Result> Handle(UpdateStoryPrivacyCommand command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateStorySummaryCommand command, CancellationToken cancellationToken)
     {
         var storyId = StoryId.From(command.StoryId);
 
@@ -25,12 +25,10 @@ public class UpdateStoryPrivacyHandler(IStoryRepository storyRepository, IAuthor
 
         if (!storyAuthResult.IsSuccess)
             return storyAuthResult;
-
+        
         var story = storyAuthResult.Value;
-        
-        story.UpdatePrivacy(command.IsPublic);
-        storyRepository.UpdateStory(story);
-        
+        story.UpdateSummary(command.Summary);
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
         
         return Result.Success();
