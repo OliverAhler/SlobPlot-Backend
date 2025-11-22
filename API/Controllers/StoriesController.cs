@@ -1,8 +1,10 @@
+using API.Contracts.Stories.CreateChapter;
 using API.Contracts.Stories.CreateStory;
 using API.Contracts.Stories.UpdateChapter;
 using API.Contracts.Stories.UpdateStory;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Handlers;
+using Application.Features.Stories.Commands.AddChapter;
 using Application.Features.Stories.Commands.CreateStory;
 using Application.Features.Stories.Commands.UpdateChapter;
 using Application.Features.Stories.Commands.UpdateStory;
@@ -134,12 +136,24 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
 
 
     #region Chapters
-
     [HttpGet]
     [Route("{storyId:guid}/chapters")]
     public async Task<IActionResult> GetStoryChapters([FromRoute] Guid storyId, CancellationToken cancellationToken)
     {
         var query = new GetStoryChaptersQuery(storyId);
+        var result = await dispatcher.Dispatch(query, cancellationToken);
+        
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : BadRequest(result.Error);
+    }
+    
+    [HttpPost]
+    [Route("{storyId:guid}/chapters")]
+    [Authorize]
+    public async Task<IActionResult> CreateStoryChapters([FromRoute] Guid storyId, [FromBody] CreateChapterRequest request, CancellationToken cancellationToken)
+    {
+        var query = new CreateChapterCommand(storyId, request.Title, request.Body, request.IsPublic);
         var result = await dispatcher.Dispatch(query, cancellationToken);
         
         return result.IsSuccess 

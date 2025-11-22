@@ -8,11 +8,11 @@ using Domain.StoryManagement.ValueObjects;
 
 namespace Application.Features.Stories.Commands.AddChapter;
 
-public record AddChapterCommand(Guid StoryId,  string Title, string Body, bool IsPublic = true) : ICommand<Result<Guid>>;
+public record CreateChapterCommand(Guid StoryId,  string Title, string Body, bool IsPublic = true) : ICommand<Result<Guid>>;
 
-public class AddChapterCommandHandler(IStoryRepository storyRepository, IAuthorizationService authorizationService, IUnitOfWork unitOfWork) : ICommandHandler<AddChapterCommand, Result<Guid>>
+public class AddChapterCommandHandler(IStoryRepository storyRepository, IAuthorizationService authorizationService, IUnitOfWork unitOfWork) : ICommandHandler<CreateChapterCommand, Result<Guid>>
 {
-    public async Task<Result<Guid>> Handle(AddChapterCommand command, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CreateChapterCommand command, CancellationToken cancellationToken)
     {
         var storyId = StoryId.From(command.StoryId);
 
