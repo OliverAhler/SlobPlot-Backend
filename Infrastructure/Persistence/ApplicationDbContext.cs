@@ -10,7 +10,7 @@ namespace Infrastructure.Persistence;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
     //Master
-    public DbSet<Genre> Genre { get; set; } = null!;
+    public DbSet<Genre> Genres { get; set; } = null!;
     public DbSet<DbStatus> Status { get; set; } = null!;
 
     //Identity

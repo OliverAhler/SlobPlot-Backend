@@ -4,7 +4,6 @@ using Domain.StoryManagement.ValueObjects;
 using Domain.UserManagement.Entities;
 using Domain.UserManagement.ValueObjects;
 
-
 namespace Domain.StoryManagement.Aggregates;
 
 public class Story : AggregateRoot<StoryId>
@@ -23,10 +22,6 @@ public class Story : AggregateRoot<StoryId>
     private List<StoryChapter> _chapters = [];
     public IReadOnlyCollection<StoryChapter> Chapters => _chapters.AsReadOnly();
 
-    // Genres collection - for domain logic
-    internal readonly List<int> _genreIds = [];
-    public IReadOnlyCollection<int> GenreIds => _genreIds.AsReadOnly();
-
     // Navigation properties - for EF Core queries only (not exposed for domain logic)
     private UserProfile? _author;
     public UserProfile? Author => _author;
@@ -36,13 +31,10 @@ public class Story : AggregateRoot<StoryId>
 
     private Story() {}
     
-    public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPublic, int[] genreIds)
+    public static Result<Story> Create(UserId userId, string title, string? subTitle, string? summary, bool isPublic, Genre[] genres)
     {
         if(userId.Value == Guid.Empty)
             return Result<Story>.Failure("Invalid userId");
-        
-        if(genreIds.Length is 0 or > 5)
-            return Result<Story>.Failure("Amount of genres for a story must be between 1 and 5");
         
         title = title.Trim();
         subTitle = string.IsNullOrWhiteSpace(subTitle) ? null : subTitle.Trim();
@@ -67,8 +59,11 @@ public class Story : AggregateRoot<StoryId>
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
+
+        var genreResult = story.UpdateGenres(genres);
         
-        story._genreIds.AddRange(genreIds);
+        if (!genreResult.IsSuccess)
+            return Result<Story>.Failure(genreResult.Error);
         
         // story.AddDomainEvent(new StoryCreatedEvent(story.Id, story.AuthorId));
         
@@ -112,15 +107,16 @@ public class Story : AggregateRoot<StoryId>
         return Result.Success();
     }
     
-    public Result UpdateGenres(int[] genreIds)
+    public Result UpdateGenres(Genre[] genres)
     {
-        if (genreIds.Length is 0 or > 5)
-            return Result.Failure("Story must have between 1 and 5 genres");
-        
-        _genreIds.Clear();
-        _genreIds.AddRange(genreIds);
+        if(genres.Length is 0 or > 5)
+            return Result.Failure("Amount of genres for a story must be between 1 and 5");
+
+        _genres.Clear();
+        _genres.AddRange(genres);
+    
         UpdatedAt = DateTime.UtcNow;
-        
+    
         return Result.Success();
     }
 

@@ -1,4 +1,3 @@
-using API.Contracts.Users.GetAuthenticatedUser;
 using API.Contracts.Users.SyncUser;
 using API.Extensions;
 using Application.Common.Interfaces;
@@ -24,7 +23,7 @@ public class UserController(IDispatcher dispatcher, ICurrentUserService currentU
         var result = await dispatcher.Dispatch(query, cancellationToken);
         
         return result.IsSuccess 
-            ? Ok(result.Value.ToResponse()) 
+            ? Ok(result.Value) 
             : NotFound(result.Error);
     }
     

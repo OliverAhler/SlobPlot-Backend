@@ -113,9 +113,6 @@ public class StoryConfiguration : IEntityTypeConfiguration<Story>
         builder.Navigation(s => s.Genres)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        // Keep _genreIds for domain logic (ignore it from EF mapping)
-        builder.Ignore(s => s.GenreIds);
-
         // Relationship with Status (DbStatus)
         builder.HasOne<DbStatus>()
             .WithMany()

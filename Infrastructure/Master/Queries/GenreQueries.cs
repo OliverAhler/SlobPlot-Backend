@@ -9,7 +9,7 @@ public class GenreQueries(ApplicationDbContext context) : IGenreQueries
 {
     public async Task<IReadOnlyList<GenreDto>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await context.Genre
+        return await context.Genres
             .AsNoTracking()
             .Select(g => new GenreDto(g.Id, g.DisplayName))
             .ToListAsync(cancellationToken);

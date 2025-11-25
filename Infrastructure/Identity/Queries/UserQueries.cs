@@ -28,7 +28,6 @@ public class UserQueries(ApplicationDbContext context) : IUserQueries
             .Where(u => u.Id == userId)
             .Select(u => new AuthenticatedUserDto(
                 u.Id.Value,
-                u.SubUid,
                 u.UserName,
                 u.CreatedAt
             ))
@@ -42,7 +41,6 @@ public class UserQueries(ApplicationDbContext context) : IUserQueries
             .Where(u => u.SubUid == subUid)
             .Select(u => new AuthenticatedUserDto(
                 u.Id.Value,
-                u.SubUid,
                 u.UserName,
                 u.CreatedAt
             ))

@@ -9,6 +9,7 @@ using Infrastructure.Persistence;
 using Infrastructure.Identity.Queries;
 using Infrastructure.Identity.Repositories;
 using Infrastructure.Master.Queries;
+using Infrastructure.Master.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Stories.Queries;
 using Infrastructure.Stories.Repositories;
@@ -28,6 +29,9 @@ public static class DependencyInjection
         //Master Queries
         services.AddScoped<IGenreQueries, GenreQueries>();
         services.AddScoped<IStatusQueries, StatusQueries>();
+        
+        //Master Commands
+        services.AddScoped<IGenreRepository, GenreRepository>();
         
         //Identity Commands
         services.AddScoped<IUserRepository, UserRepository>();

@@ -26,9 +26,6 @@ public class GetStoryByIdHandler(IStoryQueries storyQueries, ICurrentUserService
 
         var story = result.Value;
         
-        var currentUserId = await currentUser.GetUserIdAsync(cancellationToken);
-        var enrichedDto = story with { IsOwner = story.AuthorId == currentUserId };
-        
-        return Result<StoryDetailDto>.Success(enrichedDto);
+        return Result<StoryDetailDto>.Success(story);
     }
 }

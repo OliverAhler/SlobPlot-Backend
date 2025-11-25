@@ -22,7 +22,7 @@ public class GetUserBySubQueryHandler(IUserQueries userQueries) : IQueryHandler<
         if(user == null)
             return Result<AuthenticatedUserDto>.Failure("User not found");
 
-        var userResponse = new AuthenticatedUserDto(user.Id, user.SubUid, user.UserName, user.CreatedAt);
+        var userResponse = new AuthenticatedUserDto(user.Id, user.UserName, user.CreatedAt);
         return Result<AuthenticatedUserDto>.Success(userResponse);
     }
 }

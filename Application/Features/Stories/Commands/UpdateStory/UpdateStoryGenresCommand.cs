@@ -1,6 +1,7 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Handlers;
 using Application.Common.Interfaces.Handlers.Messaging;
+using Application.Features.Genres;
 using Application.IRepositories;
 using Domain.Common;
 using Domain.Common.Authorization;
@@ -10,7 +11,11 @@ namespace Application.Features.Stories.Commands.UpdateStory;
 
 public record UpdateStoryGenresCommand(Guid  StoryId, int[] GenreIds) : ICommand<Result>;
 
-public class UpdateStoryGenresCommandHandler(IStoryRepository storyRepository, IUnitOfWork unitOfWork, IAuthorizationService authorizationService) : ICommandHandler<UpdateStoryGenresCommand, Result>
+public class UpdateStoryGenresCommandHandler(
+    IStoryRepository storyRepository,
+    IGenreRepository genreRepository,
+    IUnitOfWork unitOfWork,
+    IAuthorizationService authorizationService) : ICommandHandler<UpdateStoryGenresCommand, Result>
 {
     public async Task<Result> Handle(UpdateStoryGenresCommand command, CancellationToken cancellationToken)
     {
@@ -26,8 +31,10 @@ public class UpdateStoryGenresCommandHandler(IStoryRepository storyRepository, I
         if (!storyAuthResult.IsSuccess)
             return storyAuthResult;
         
+        var genres = await genreRepository.GetByIdsAsync(command.GenreIds, cancellationToken);
+        
         var story = storyAuthResult.Value;
-        story.UpdateGenres(command.GenreIds);
+        story.UpdateGenres(genres.ToArray());
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         

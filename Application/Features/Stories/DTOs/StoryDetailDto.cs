@@ -9,7 +9,6 @@ public record StoryDetailDto(
     string? Summary,
     List<string> Genres,
     bool IsPublic,
-    bool IsOwner,
     DateTime CreatedAt,
     DateTime UpdatedAt
 );

@@ -45,7 +45,6 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
                 s.Summary,
                 s.Genres.Select(g => g.DisplayName).ToList(),
                 s.IsPublic,
-                false, //IsOwner - Calculated in Application layer
                 s.CreatedAt,
                 s.UpdatedAt
             ))
@@ -65,12 +64,12 @@ public class StoryQueries(ApplicationDbContext context) : IStoryQueries
                      && (s.IsPublic || (currentUserIdValue != null && s.AuthorId == currentUserIdValue)))
             .Select(s => new StoryListDetailedDto(
                 s.Id.Value,
+                s.AuthorId.Value,
                 s.Title,
                 s.Author!.DisplayName,
                 s.Genres.Select(g => g.DisplayName).ToList(),
                 s.IsPublic,
                 "Complete",
-                currentUserIdValue != null && s.AuthorId == currentUserIdValue,
                 s.UpdatedAt,
                 s.CreatedAt
             ))
