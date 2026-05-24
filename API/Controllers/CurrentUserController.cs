@@ -1,9 +1,7 @@
-using Application.Common.Interfaces;
-using Application.Common.Interfaces.Handlers;
 using Application.Features.Stories.Queries.CurrentUserStories;
-using Application.Features.Stories.Queries.GetStoriesByAuthor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Venly.Dispatch.Interfaces;
 
 namespace API.Controllers;
 
@@ -16,7 +14,7 @@ public class CurrentUserController(IDispatcher dispatcher) : ControllerBase
     public async Task<IActionResult> GetMyStories(CancellationToken cancellationToken)
     {
         var query = new GetCurrentUserStoriesQuery();
-        var result = await dispatcher.Dispatch(query, cancellationToken);
+        var result = await dispatcher.DispatchAsync(query, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result.Value) 

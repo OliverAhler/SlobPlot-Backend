@@ -1,10 +1,10 @@
 using Application.Common.Interfaces;
-using Application.Common.Interfaces.Handlers;
-using Application.Common.Interfaces.Handlers.Messaging;
 using Application.IRepositories;
 using Domain.Common;
 using Domain.Common.Authorization;
 using Domain.StoryManagement.ValueObjects;
+using Venly.Dispatch.Interfaces;
+using Venly.Dispatch.Interfaces.Messaging;
 
 namespace Application.Features.Stories.Commands.UpdateStory;
 

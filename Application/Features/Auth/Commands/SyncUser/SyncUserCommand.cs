@@ -1,8 +1,8 @@
-using Application.Common.Interfaces.Handlers;
-using Application.Common.Interfaces.Handlers.Messaging;
 using Application.IRepositories;
 using Domain.Common;
 using Domain.UserManagement.Aggregates;
+using Venly.Dispatch.Interfaces;
+using Venly.Dispatch.Interfaces.Messaging;
 
 namespace Application.Features.Auth.Commands.SyncUser;
 

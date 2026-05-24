@@ -1,6 +1,6 @@
-using Application.Common.Interfaces.Handlers;
 using Application.Features.Genres.Queries.GetGenres;
 using Microsoft.AspNetCore.Mvc;
+using Venly.Dispatch.Interfaces;
 
 namespace API.Controllers;
 
@@ -13,7 +13,7 @@ public class GenresController(IDispatcher dispatcher) : ControllerBase
     {
         var query = new GetGenresQuery();
         
-        var result = await dispatcher.Dispatch(query, cancellationToken);
+        var result = await dispatcher.DispatchAsync(query, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result.Value) 

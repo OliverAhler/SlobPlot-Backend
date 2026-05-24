@@ -3,7 +3,6 @@ using API.Contracts.Stories.CreateStory;
 using API.Contracts.Stories.UpdateChapter;
 using API.Contracts.Stories.UpdateStory;
 using Application.Common.Interfaces;
-using Application.Common.Interfaces.Handlers;
 using Application.Features.Stories.Commands.AddChapter;
 using Application.Features.Stories.Commands.CreateStory;
 using Application.Features.Stories.Commands.UpdateChapter;
@@ -14,6 +13,7 @@ using Application.Features.Stories.Queries.GetStoryById;
 using Application.Features.Stories.Queries.GetStoryChapters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Venly.Dispatch.Interfaces;
 
 namespace API.Controllers;
 
@@ -26,7 +26,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     {
         var query = new GetStoriesQuery();
 
-        var result = await dispatcher.Dispatch(query, cancellationToken);
+        var result = await dispatcher.DispatchAsync(query, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result.Value) 
@@ -39,7 +39,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     {
         var query = new GetStoryByIdQuery(storyId);
 
-        var result = await dispatcher.Dispatch(query, cancellationToken);
+        var result = await dispatcher.DispatchAsync(query, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result.Value) 
@@ -55,7 +55,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     {
         var command = new UpdateStoryPrivacyCommand(storyId, request.IsPublic);
 
-        var result = await dispatcher.Dispatch(command, cancellationToken);
+        var result = await dispatcher.DispatchAsync(command, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result) 
@@ -69,7 +69,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     {
         var command = new UpdateStoryTitleCommand(storyId, request.Title);
 
-        var result = await dispatcher.Dispatch(command, cancellationToken);
+        var result = await dispatcher.DispatchAsync(command, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result) 
@@ -83,7 +83,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     {
         var command = new UpdateStorySubTitleCommand(storyId, request.SubTitle);
 
-        var result = await dispatcher.Dispatch(command, cancellationToken);
+        var result = await dispatcher.DispatchAsync(command, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result) 
@@ -97,7 +97,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     {
         var command = new UpdateStorySummaryCommand(storyId, request.Summary);
 
-        var result = await dispatcher.Dispatch(command, cancellationToken);
+        var result = await dispatcher.DispatchAsync(command, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result) 
@@ -111,7 +111,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     {
         var command = new UpdateStoryGenresCommand(storyId, request.GenreIds);
 
-        var result = await dispatcher.Dispatch(command, cancellationToken);
+        var result = await dispatcher.DispatchAsync(command, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result) 
@@ -127,7 +127,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
         var userId = await currentUserService.GetUserIdAsync(cancellationToken);
         
         var command = new CreateStoryCommand(userId, request.Title, request.SubTitle, request.Summary, request.IsPrivate, request.GenreIds);
-        var result = await dispatcher.Dispatch(command, cancellationToken);
+        var result = await dispatcher.DispatchAsync(command, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result.Value) 
@@ -141,7 +141,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     public async Task<IActionResult> GetStoryChapters([FromRoute] Guid storyId, CancellationToken cancellationToken)
     {
         var query = new GetStoryChaptersQuery(storyId);
-        var result = await dispatcher.Dispatch(query, cancellationToken);
+        var result = await dispatcher.DispatchAsync(query, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result.Value) 
@@ -154,7 +154,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
     public async Task<IActionResult> CreateStoryChapters([FromRoute] Guid storyId, [FromBody] CreateChapterRequest request, CancellationToken cancellationToken)
     {
         var query = new CreateChapterCommand(storyId, request.Title, request.Body, request.IsPublic);
-        var result = await dispatcher.Dispatch(query, cancellationToken);
+        var result = await dispatcher.DispatchAsync(query, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result.Value) 
@@ -168,7 +168,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
         CancellationToken cancellationToken)
     {
         var query = new GetChapterByIdQuery(storyId, chapterId);
-        var result = await dispatcher.Dispatch(query, cancellationToken);
+        var result = await dispatcher.DispatchAsync(query, cancellationToken);
     
         return result.IsSuccess 
             ? Ok(result.Value) 
@@ -185,7 +185,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
         CancellationToken cancellationToken)
     {
         var command = new UpdateChapterTitleCommand(storyId, chapterId, request.Title);
-        var result = await dispatcher.Dispatch(command, cancellationToken);
+        var result = await dispatcher.DispatchAsync(command, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result) 
@@ -202,7 +202,7 @@ public class StoriesController(IDispatcher dispatcher, ICurrentUserService curre
         CancellationToken cancellationToken)
     {
         var command = new UpdateChapterBodyCommand(storyId, chapterId, request.Body);
-        var result = await dispatcher.Dispatch(command, cancellationToken);
+        var result = await dispatcher.DispatchAsync(command, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result) 

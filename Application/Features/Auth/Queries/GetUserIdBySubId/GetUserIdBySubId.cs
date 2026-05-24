@@ -1,7 +1,6 @@
-using Application.Common.Interfaces;
-using Application.Common.Interfaces.Handlers;
-using Application.Common.Interfaces.Handlers.Messaging;
 using Domain.Common;
+using Venly.Dispatch.Interfaces;
+using Venly.Dispatch.Interfaces.Messaging;
 
 namespace Application.Features.Auth.Queries.GetUserIdBySubId;
 

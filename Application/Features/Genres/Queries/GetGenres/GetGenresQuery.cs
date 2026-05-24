@@ -1,9 +1,8 @@
-using Application.Common.Interfaces;
-using Application.Common.Interfaces.Handlers;
-using Application.Common.Interfaces.Handlers.Messaging;
 using Application.Features.Genres.DTOs;
 using Domain.Common;
 using Microsoft.Extensions.Caching.Memory;
+using Venly.Dispatch.Interfaces;
+using Venly.Dispatch.Interfaces.Messaging;
 
 namespace Application.Features.Genres.Queries.GetGenres;
 public record GetGenresQuery() : IQuery<Result<IReadOnlyList<GenreDto>>>;

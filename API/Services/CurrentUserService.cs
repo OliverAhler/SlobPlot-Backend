@@ -1,8 +1,9 @@
 using API.Extensions;
 using Application.Common.Interfaces;
-using Application.Common.Interfaces.Handlers;
 using Application.Features.Auth.Queries.GetUserIdBySubId;
 using Microsoft.Extensions.Caching.Memory;
+using Venly.Dispatch.Interfaces;
+
 
 namespace API.Services;
 
@@ -26,7 +27,7 @@ public class CurrentUserService(
 
         // Cache miss - query the database
         var query = new GetUserIdBySubIdQuery(sub.Value);
-        var result = await dispatcher.Dispatch(query, cancellationToken);
+        var result = await dispatcher.DispatchAsync(query, cancellationToken);
         
         if (!result.IsSuccess)
             throw new UnauthorizedAccessException("User profile not found");

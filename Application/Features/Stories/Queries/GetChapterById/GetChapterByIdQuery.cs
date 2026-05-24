@@ -1,10 +1,10 @@
 using Application.Common.Interfaces;
-using Application.Common.Interfaces.Handlers;
-using Application.Common.Interfaces.Handlers.Messaging;
 using Application.Features.Stories.DTOs;
 using Domain.Common;
 using Domain.Common.Authorization;
 using Domain.UserManagement.ValueObjects;
+using Venly.Dispatch.Interfaces;
+using Venly.Dispatch.Interfaces.Messaging;
 
 namespace Application.Features.Stories.Queries.GetChapterById;
 

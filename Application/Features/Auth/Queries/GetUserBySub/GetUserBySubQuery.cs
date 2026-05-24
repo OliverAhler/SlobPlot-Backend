@@ -1,8 +1,7 @@
-using Application.Common.Interfaces;
-using Application.Common.Interfaces.Handlers;
-using Application.Common.Interfaces.Handlers.Messaging;
 using Application.Features.Auth.DTOs;
 using Domain.Common;
+using Venly.Dispatch.Interfaces;
+using Venly.Dispatch.Interfaces.Messaging;
 
 namespace Application.Features.Auth.Queries.GetUserBySub;
 

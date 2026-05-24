@@ -1,12 +1,12 @@
 using API.Contracts.Users.SyncUser;
 using API.Extensions;
 using Application.Common.Interfaces;
-using Application.Common.Interfaces.Handlers;
 using Application.Features.Auth.Commands.SyncUser;
 using Application.Features.Auth.Queries.GetUserBySub;
 using Application.Features.Stories.Queries.GetStoriesByAuthor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Venly.Dispatch.Interfaces;
 
 namespace API.Controllers;
 
@@ -20,7 +20,7 @@ public class UserController(IDispatcher dispatcher, ICurrentUserService currentU
     {
         var query = new GetUserByIdPSubQuery(currentUserService.GetSubId());
         
-        var result = await dispatcher.Dispatch(query, cancellationToken);
+        var result = await dispatcher.DispatchAsync(query, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result.Value) 
@@ -35,7 +35,7 @@ public class UserController(IDispatcher dispatcher, ICurrentUserService currentU
             return BadRequest("Invalid SubUid format");
 
         var command = new SyncUserCommand(subUid, request.UserName);
-        var result = await dispatcher.Dispatch(command, cancellationToken);
+        var result = await dispatcher.DispatchAsync(command, cancellationToken);
     
         return result.IsSuccess 
             ? Ok(new SyncUserResponse(result.Value))
@@ -48,7 +48,7 @@ public class UserController(IDispatcher dispatcher, ICurrentUserService currentU
     {
         var query = new GetStoriesByAuthorQuery(userid);
         
-        var result = await dispatcher.Dispatch(query, cancellationToken);
+        var result = await dispatcher.DispatchAsync(query, cancellationToken);
         
         return result.IsSuccess 
             ? Ok(result.Value) 

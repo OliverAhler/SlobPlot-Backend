@@ -61,16 +61,11 @@ public class StoryConfiguration : IEntityTypeConfiguration<Story>
             .HasColumnName("updated_at")
             .IsRequired();
 
-        // Shadow properties for soft delete (not in domain model)
-        builder.Property<bool>("IsDeleted")
-            .HasColumnName("is_deleted")
-            .HasDefaultValue(false);
-
         builder.Property<DateTime?>("DeletedAt")
             .HasColumnName("deleted_at");
 
         // Global query filter for soft delete
-        builder.HasQueryFilter(s => !EF.Property<bool>(s, "IsDeleted"));
+        builder.HasQueryFilter(s => EF.Property<DateTime?>(s, "DeletedAt") == null);
 
         // Chapters collection - owned collection with cascade delete
         builder.HasMany(s => s.Chapters)
