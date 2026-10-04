@@ -1,16 +1,15 @@
 using Application.Common.Interfaces;
 using Application.Features.Stories.DTOs;
-using Domain.Common;
 using Domain.Common.Authorization;
 using Domain.UserManagement.ValueObjects;
-using Venly.Dispatch.Interfaces;
-using Venly.Dispatch.Interfaces.Messaging;
+using Vesia.Dispatch;
+using Vesia.Result;
 
 namespace Application.Features.Stories.Queries.GetStoryById;
 
 public record GetStoryByIdQuery(Guid Id) : IQuery<Result<StoryDetailDto>>;
 
-public class GetStoryByIdHandler(IStoryQueries storyQueries, ICurrentUserService currentUser, IAuthorizationService authorizationService) : IQueryHandler<GetStoryByIdQuery, Result<StoryDetailDto>>
+public class GetStoryByIdHandler(IStoryQueries storyQueries, IAuthorizationService authorizationService) : IQueryHandler<GetStoryByIdQuery, Result<StoryDetailDto>>
 {
     public async Task<Result<StoryDetailDto>> Handle(GetStoryByIdQuery query, CancellationToken cancellationToken)
     {

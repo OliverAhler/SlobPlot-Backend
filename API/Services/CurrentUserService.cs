@@ -2,15 +2,11 @@ using API.Extensions;
 using Application.Common.Interfaces;
 using Application.Features.Auth.Queries.GetUserIdBySubId;
 using Microsoft.Extensions.Caching.Memory;
-using Venly.Dispatch.Interfaces;
-
+using Vesia.Dispatch;
 
 namespace API.Services;
 
-public class CurrentUserService(
-    IHttpContextAccessor httpContextAccessor, 
-    IDispatcher dispatcher,
-    IMemoryCache cache) : ICurrentUserService
+public class CurrentUserService(IHttpContextAccessor httpContextAccessor, IDispatcher dispatcher, IMemoryCache cache) : ICurrentUserService
 {
     public async Task<Guid> GetUserIdAsync(CancellationToken cancellationToken)
     {

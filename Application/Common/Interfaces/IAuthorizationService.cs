@@ -1,6 +1,7 @@
 using Domain.Common;
 using Domain.Common.Authorization;
 using Domain.UserManagement.ValueObjects;
+using Vesia.Result;
 
 namespace Application.Common.Interfaces;
 

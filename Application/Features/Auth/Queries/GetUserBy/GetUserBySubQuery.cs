@@ -1,7 +1,6 @@
 using Application.Features.Auth.DTOs;
-using Domain.Common;
-using Venly.Dispatch.Interfaces;
-using Venly.Dispatch.Interfaces.Messaging;
+using Vesia.Dispatch;
+using Vesia.Result;
 
 namespace Application.Features.Auth.Queries.GetUserBySub;
 

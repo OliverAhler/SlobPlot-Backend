@@ -9,7 +9,6 @@
     <ItemGroup>
       <Folder Include="Features\Auth\Commands\" />
       <Folder Include="Features\Genres\Commands\" />
-      <Folder Include="Features\Genres\Queries\" />
       <Folder Include="Features\Statuses\Commands\" />
       <Folder Include="Features\Statuses\Queries\" />
       <Folder Include="Features\UserProfiles\Commands\" />
@@ -21,7 +20,7 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.8" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
-      <PackageReference Include="Venly.Dispatch" Version="0.1.0" />
+      <PackageReference Include="Vesia.Dispatch" Version="0.3.2" />
     </ItemGroup>
 
     <ItemGroup>

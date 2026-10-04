@@ -1,8 +1,7 @@
 using Application.Common.Interfaces;
 using Application.Features.Stories.DTOs;
-using Domain.Common;
-using Venly.Dispatch.Interfaces;
-using Venly.Dispatch.Interfaces.Messaging;
+using Vesia.Dispatch;
+using Vesia.Result;
 
 namespace Application.Features.Stories.Queries.CurrentUserStories;
 

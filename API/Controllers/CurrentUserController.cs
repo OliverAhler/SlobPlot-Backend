@@ -1,7 +1,7 @@
 using Application.Features.Stories.Queries.CurrentUserStories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Venly.Dispatch.Interfaces;
+using Vesia.Dispatch;
 
 namespace API.Controllers;
 

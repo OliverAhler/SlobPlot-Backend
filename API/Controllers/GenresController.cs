@@ -1,6 +1,6 @@
 using Application.Features.Genres.Queries.GetGenres;
 using Microsoft.AspNetCore.Mvc;
-using Venly.Dispatch.Interfaces;
+using Vesia.Dispatch;
 
 namespace API.Controllers;
 

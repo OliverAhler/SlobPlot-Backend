@@ -1,8 +1,7 @@
 using Application.Features.Genres.DTOs;
-using Domain.Common;
 using Microsoft.Extensions.Caching.Memory;
-using Venly.Dispatch.Interfaces;
-using Venly.Dispatch.Interfaces.Messaging;
+using Vesia.Dispatch;
+using Vesia.Result;
 
 namespace Application.Features.Genres.Queries.GetGenres;
 public record GetGenresQuery() : IQuery<Result<IReadOnlyList<GenreDto>>>;

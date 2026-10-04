@@ -2,6 +2,7 @@ using Application.Common.Interfaces;
 using Domain.Common;
 using Domain.Common.Authorization;
 using Domain.UserManagement.ValueObjects;
+using Vesia.Result;
 
 namespace Infrastructure.Services;
 

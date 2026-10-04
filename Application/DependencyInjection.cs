@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Venly.Dispatch;
-using Venly.Dispatch.Enums;
+using Vesia.Dispatch;
 
 namespace Application;
 public static class DependencyInjection
@@ -12,20 +11,7 @@ public static class DependencyInjection
             options.CommandLogging = LoggingMode.All;
             options.QueryLogging = LoggingMode.OptIn;
         });
-        // services.AddScoped<IDispatcher, Dispatcher>();
-        //
-        // services.Scan(scan => scan
-        //     .FromAssemblyOf<IHandler>()
-        //     .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)))
-        //     .AsImplementedInterfaces()
-        //     .WithScopedLifetime());
-        //
-        // services.Scan(scan => scan
-        //     .FromAssemblyOf<IHandler>()
-        //     .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<,>)))
-        //     .AsImplementedInterfaces()
-        //     .WithScopedLifetime());
-        //
+        
         return services;
     }
 }

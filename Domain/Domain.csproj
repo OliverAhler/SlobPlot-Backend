@@ -17,4 +17,8 @@
 		<InternalsVisibleTo Include="Infrastructure" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="Vesia.Result" Version="0.2.5" />
+	</ItemGroup>
+
 </Project>

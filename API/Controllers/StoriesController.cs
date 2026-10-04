@@ -13,7 +13,7 @@ using Application.Features.Stories.Queries.GetStoryById;
 using Application.Features.Stories.Queries.GetStoryChapters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Venly.Dispatch.Interfaces;
+using Vesia.Dispatch;
 
 namespace API.Controllers;
 

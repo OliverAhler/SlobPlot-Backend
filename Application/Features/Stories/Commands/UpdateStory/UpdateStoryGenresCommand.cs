@@ -1,11 +1,10 @@
 using Application.Common.Interfaces;
 using Application.Features.Genres;
 using Application.IRepositories;
-using Domain.Common;
 using Domain.Common.Authorization;
 using Domain.StoryManagement.ValueObjects;
-using Venly.Dispatch.Interfaces;
-using Venly.Dispatch.Interfaces.Messaging;
+using Vesia.Dispatch;
+using Vesia.Result;
 
 namespace Application.Features.Stories.Commands.UpdateStory;
 
@@ -29,7 +28,7 @@ public class UpdateStoryGenresCommandHandler(
         );
 
         if (!storyAuthResult.IsSuccess)
-            return storyAuthResult;
+            return Result.Failure(storyAuthResult.Error);
         
         var genres = await genreRepository.GetByIdsAsync(command.GenreIds, cancellationToken);
         

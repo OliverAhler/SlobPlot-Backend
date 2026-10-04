@@ -6,7 +6,7 @@ using Application.Features.Auth.Queries.GetUserBySub;
 using Application.Features.Stories.Queries.GetStoriesByAuthor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Venly.Dispatch.Interfaces;
+using Vesia.Dispatch;
 
 namespace API.Controllers;
 

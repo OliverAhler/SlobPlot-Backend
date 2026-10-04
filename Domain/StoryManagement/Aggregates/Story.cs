@@ -3,6 +3,7 @@ using Domain.StoryManagement.Entities;
 using Domain.StoryManagement.ValueObjects;
 using Domain.UserManagement.Entities;
 using Domain.UserManagement.ValueObjects;
+using Vesia.Result;
 
 namespace Domain.StoryManagement.Aggregates;
 

@@ -1,5 +1,6 @@
 using Domain.Common;
 using Domain.UserManagement.ValueObjects;
+using Vesia.Result;
 
 namespace Domain.UserManagement.Entities;
 
