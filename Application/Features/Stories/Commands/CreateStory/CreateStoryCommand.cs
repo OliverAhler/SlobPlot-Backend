@@ -20,7 +20,7 @@ public class CreateStoryCommandHandler(IStoryRepository storyRepository, IGenreR
         var storyResult = Story.Create(userId, command.Title, command.SubTitle, command.Summary, command.IsPrivate, genres.ToArray());
         
         if(!storyResult.IsSuccess)
-            return Result<Guid>.Failure(storyResult.Error);
+            return Result<Guid>.Failure(storyResult.Error ?? Error.Internal("Unknown Error"));
 
         var story = storyResult.Value;
 

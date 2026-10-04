@@ -24,7 +24,7 @@ public class GetChapterByIdQueryHandler(IStoryQueries storyQueries, IAuthorizati
         );
         
         if (!storyResult.IsSuccess)
-            return Result<ChapterDetailDto>.Failure(storyResult.Error);
+            return Result<ChapterDetailDto>.Failure(storyResult.Error ?? Error.Internal("Unknown Error"));
         
         // Then get the chapter
         var chapter = await storyQueries.GetChapterDetailAsync(

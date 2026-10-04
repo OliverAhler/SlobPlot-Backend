@@ -23,7 +23,7 @@ public class UpdateStorySummaryCommandHandler(IStoryRepository storyRepository, 
         );
 
         if (!storyAuthResult.IsSuccess)
-            return Result.Failure(storyAuthResult.Error);
+            return Result.Failure(storyAuthResult.Error ?? Error.Internal("Unknown Error"));
         
         var story = storyAuthResult.Value;
         story.UpdateSummary(command.Summary);

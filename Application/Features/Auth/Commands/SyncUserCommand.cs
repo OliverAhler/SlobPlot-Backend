@@ -31,7 +31,7 @@ public class SyncUserCommandHandler(IUserRepository userRepository, IUnitOfWork 
         var userResult = User.Create(command.SubUid, command.UserName);
     
         if (!userResult.IsSuccess)
-            return Result<bool>.Failure(userResult.Error);
+            return Result<bool>.Failure(userResult.Error ?? Error.Internal("Unknown Error"));
         
         userRepository.AddUser(userResult.Value);
         

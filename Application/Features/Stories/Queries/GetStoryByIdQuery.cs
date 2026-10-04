@@ -21,7 +21,7 @@ public class GetStoryByIdHandler(IStoryQueries storyQueries, IAuthorizationServi
         );
         
         if(!result.IsSuccess)
-            return Result<StoryDetailDto>.Failure(result.Error);
+            return Result<StoryDetailDto>.Failure(result.Error ?? Error.Internal("Unknown Error"));
 
         var story = result.Value;
         

@@ -23,7 +23,7 @@ public class UpdateStoryTitleCommandHandler(IStoryRepository storyRepository, IU
         );
 
         if (!storyAuthResult.IsSuccess)
-            return Result.Failure(storyAuthResult.Error);
+            return Result.Failure(storyAuthResult.Error ?? Error.Internal("Unknown Error"));
         
         var story = storyAuthResult.Value;
         story.UpdateTitle(command.Title);

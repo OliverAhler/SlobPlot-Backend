@@ -23,7 +23,7 @@ public class UpdateChapterTitleCommandHandler(IStoryRepository storyRepository, 
         );
 
         if (!storyAuthResult.IsSuccess)
-            return Result.Failure(storyAuthResult.Error);
+            return Result.Failure(storyAuthResult.Error ?? Error.Internal("Unknown Error"));
         
         var chapterId = ChapterId.From(command.ChapterId);
         

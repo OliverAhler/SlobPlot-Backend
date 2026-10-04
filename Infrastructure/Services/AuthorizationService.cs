@@ -30,7 +30,7 @@ public class AuthorizationService(ICurrentUserService currentUserService) : IAut
         var authResult = await Authorize(entity, getOwnerId, policy, cancellationToken);
         
         if (!authResult.IsSuccess)
-            return Result<T>.Failure(authResult.Error);
+            return Result<T>.Failure(authResult.Error ?? Error.Internal("Unknown Error"));
         
         return Result<T>.Success(entity);
     }

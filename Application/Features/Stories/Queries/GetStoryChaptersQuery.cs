@@ -21,7 +21,7 @@ public class GetStoryChaptersQueryHandler(IStoryQueries storyQueries, IAuthoriza
         );
         
         if(!result.IsSuccess)
-            return Result<IReadOnlyCollection<ChapterListItemDto>>.Failure(result.Error);
+            return Result<IReadOnlyCollection<ChapterListItemDto>>.Failure(result.Error ?? Error.Internal("Unknown Error"));
         
         var story = result.Value;
         

@@ -64,7 +64,7 @@ public class Story : AggregateRoot<StoryId>
         var genreResult = story.UpdateGenres(genres);
         
         if (!genreResult.IsSuccess)
-            return Result<Story>.Failure(genreResult.Error);
+            return Result<Story>.Failure(genreResult.Error ?? Error.Internal("Unknown Error"));
         
         // story.AddDomainEvent(new StoryCreatedEvent(story.Id, story.AuthorId));
         

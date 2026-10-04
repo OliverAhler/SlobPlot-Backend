@@ -7,10 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Auth\Commands\" />
       <Folder Include="Features\Genres\Commands\" />
       <Folder Include="Features\Statuses\Commands\" />
-      <Folder Include="Features\Statuses\Queries\" />
       <Folder Include="Features\UserProfiles\Commands\" />
       <Folder Include="Features\UserProfiles\Queries\" />
       <Folder Include="Features\Users\Commands\" />

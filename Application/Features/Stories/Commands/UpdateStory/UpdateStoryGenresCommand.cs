@@ -28,7 +28,7 @@ public class UpdateStoryGenresCommandHandler(
         );
 
         if (!storyAuthResult.IsSuccess)
-            return Result.Failure(storyAuthResult.Error);
+            return Result.Failure(storyAuthResult.Error ?? Error.Internal("Unknown Error"));
         
         var genres = await genreRepository.GetByIdsAsync(command.GenreIds, cancellationToken);
         

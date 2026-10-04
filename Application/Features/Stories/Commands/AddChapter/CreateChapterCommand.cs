@@ -23,7 +23,7 @@ public class AddChapterCommandHandler(IStoryRepository storyRepository, IAuthori
         );
         
         if (!storyAuthResult.IsSuccess)
-            return Result<Guid>.Failure(storyAuthResult.Error);
+            return Result<Guid>.Failure(storyAuthResult.Error ?? Error.Internal("Unknown Error"));
 
         var story = storyAuthResult.Value;
         var result = story.AddChapter(command.Title, command.Body, command.IsPublic);
